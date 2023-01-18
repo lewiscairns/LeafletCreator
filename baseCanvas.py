@@ -7,7 +7,7 @@ class LeafletCreator(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.title("Multiple Pages")
+        self.title("Leaflet Creator")
         self.geometry("800x600")
 
         self.pages = []
@@ -49,6 +49,11 @@ class BlankPage(tk.Frame):
         self.text_box_3.pack()
         self.text_box_4 = tk.Text(self, height = 5, width = 52)
         self.text_box_4.pack()
+
+        self.image_1 = tk.Image(self, height = 5, width = 10)
+        self.image_2 = tk.Image(self, height = 5, width = 10)
+        self.image_3 = tk.Image(self, height = 5, width = 10)
+        self.image_4 = tk.Image(self, height = 5, width = 10)
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
         self.next_button.pack()
