@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from PIL import Image, ImageTk
 
 pageCounter = 1
 
@@ -8,7 +8,7 @@ class LeafletCreator(tk.Tk):
         super().__init__()
 
         self.title("Leaflet Creator")
-        self.geometry("800x600")
+        self.geometry("900x800")
 
         self.pages = []
         self.current_page = 0
@@ -17,7 +17,7 @@ class LeafletCreator(tk.Tk):
 
     def create_page(self):
         global pageCounter
-        self.pages.append(BlankPage(self, pageCounter))
+        self.pages.append(LeafletPage(self, pageCounter))
         pageCounter = pageCounter + 1
         self.show_page()
 
@@ -34,7 +34,7 @@ class LeafletCreator(tk.Tk):
         self.current_page = (self.current_page - 1) % len(self.pages)
         self.show_page()
 
-class BlankPage(tk.Frame):
+class LeafletPage(tk.Frame):
     def __init__(self, master, number):
         super().__init__(master)
 
@@ -50,10 +50,17 @@ class BlankPage(tk.Frame):
         self.text_box_4 = tk.Text(self, height = 5, width = 52)
         self.text_box_4.pack()
 
-        self.image_1 = tk.Image(self, height = 5, width = 10)
-        self.image_2 = tk.Image(self, height = 5, width = 10)
-        self.image_3 = tk.Image(self, height = 5, width = 10)
-        self.image_4 = tk.Image(self, height = 5, width = 10)
+        self.defaultImage = "WikiNoImage.png"
+
+        self.image1 = Image.open(self.defaultImage)
+        self.photo1 = ImageTk.PhotoImage(self.image1)
+        self.displayImage1 = tk.Label(self, image = self.photo1)
+        self.displayImage1.pack()
+        self.displayImage1.bind('<Button-1>', self.imageClick)
+        self.displayImageButton1 = tk.Button(self, image = self.photo1, command = self.imageClick)
+        self.displayImage1.pack()
+        self.displayImageButton1 = tk.Button(self, text = "Close", command = self.destroy)
+        self.displayImage1.pack()
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
         self.next_button.pack()
@@ -63,6 +70,9 @@ class BlankPage(tk.Frame):
 
         self.add_button = tk.Button(self, text="Add New Page", command=master.create_page)
         self.add_button.pack()
+
+    def imageClick(self, event = None):
+        print('clicked')
 
 if __name__ == '__main__':
     app = LeafletCreator()
