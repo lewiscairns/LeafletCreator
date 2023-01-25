@@ -41,8 +41,6 @@ class LeafletPage(tk.Frame):
         self.label = tk.Label(self, text="Page " + str(number))
         self.label.grid(row = 0, column=1, pady=20)
 
-        self.defaultImage = "WikiNoImage.png"
-
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
         self.prev_button.grid(row = 1, column = 0, padx = 30, pady=10)
 
@@ -73,22 +71,20 @@ class LeafletPage(tk.Frame):
 
 class pageRow:
     def __init__(self):
-        self
+        self.defaultImage = "WikiNoImage.png"
 
     def startRow(self, master):
-        self.image = Image.open(master.defaultImage)
+        self.image = Image.open(self.defaultImage)
         self.photo = ImageTk.PhotoImage(self.image)
-        self.displayImage = tk.Label(master, image = self.photo)
-        self.displayImage.bind('<Button-1>', master.imageClick)
-        self.displayImageButton = tk.Button(master, image = self.photo, command = master.imageClick)
-
+        self.labelImage = tk.Label(master, image = self.photo)
+        self.labelImage.image = self.photo
+        
         self.text_box = tk.Text(master, height = 7, width = 52)
-        return self.displayImage, self.displayImageButton, self.text_box
+        return self.labelImage, self.text_box
     
     def generateRow(self, rowNum, newWidget):
         newWidget[0].grid(row = rowNum, column = 0, padx = 60, pady=10)
-        newWidget[1].grid(row = rowNum, column = 0, padx = 60, pady=10)
-        newWidget[2].grid(row = rowNum, column = 1, padx = 60, pady=10)
+        newWidget[1].grid(row = rowNum, column = 1, padx = 60, pady=10)
 
 
 if __name__ == '__main__':
