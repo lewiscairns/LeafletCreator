@@ -41,6 +41,8 @@ class LeafletPage(tk.Frame):
         self.label = tk.Label(self, text="Page " + str(number))
         self.label.grid()
 
+        self.defaultImage = "WikiNoImage.png"
+
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
         self.prev_button.grid(row = 0, column = 0, padx = 30, pady=10)
 
@@ -50,42 +52,29 @@ class LeafletPage(tk.Frame):
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
         self.next_button.grid(row = 0, column = 2, padx = 30, pady=10)
         
-        self.defaultImage = "WikiNoImage.png"
-
-        self.image1 = Image.open(self.defaultImage)
-        self.photo1 = ImageTk.PhotoImage(self.image1)
-        self.displayImage1 = tk.Label(self, image = self.photo1)
-        self.displayImage1.grid(row = 1, column = 0, padx = 60, pady=10)
-        self.displayImage1.bind('<Button-1>', self.imageClick)
-        self.displayImageButton1 = tk.Button(self, image = self.photo1, command = self.imageClick)
-        self.displayImage1.grid(row = 1, column = 0, padx = 60, pady=10)
-        self.displayImageButton1 = tk.Button(self, text = "Close", command = self.destroy)
-        self.displayImage1.grid(row = 1, column = 0, padx = 60, pady=10)
-
-        self.image2 = Image.open(self.defaultImage)
-        self.photo2 = ImageTk.PhotoImage(self.image2)
-        self.displayImage2 = tk.Label(self, image = self.photo2)
-        self.displayImage2.grid(row = 2, column = 0, padx = 60, pady=10)
-        self.displayImage2.bind('<Button-1>', self.imageClick)
-        self.displayImageButton2 = tk.Button(self, image = self.photo1, command = self.imageClick)
-        self.displayImage2.grid(row = 2, column = 0, padx = 60, pady=10)
-        self.displayImageButton2 = tk.Button(self, text = "Close", command = self.destroy)
-        self.displayImage2.grid(row = 2, column = 0, padx = 60, pady=10)
-
-        self.text_box_1 = tk.Text(self, height = 7, width = 52)
-        self.text_box_1.grid(row = 1, column = 1, padx = 60, pady=10)
-
-        self.text_box_2 = tk.Text(self, height = 7, width = 52)
-        self.text_box_2.grid(row = 2, column = 1, padx = 60, pady=10)
-
-        self.text_box_3 = tk.Text(self, height = 7, width = 52)
-        self.text_box_3.grid(row = 3, column = 1, padx = 60, pady=10)
-
-        self.text_box_4 = tk.Text(self, height = 7, width = 52)
-        self.text_box_4.grid(row = 4, column = 1, padx = 60, pady=10)
+        pageRow(self, 1)
+        pageRow(self, 2)
+        pageRow(self, 3)
+        pageRow(self, 4)
 
     def imageClick(self, event = None):
-        print('clicked')
+            print('clicked')
+
+class pageRow:
+    def __init__(self, master, rowNum):
+        self.image = Image.open(master.defaultImage)
+        self.photo = ImageTk.PhotoImage(self.image)
+        self.displayImage = tk.Label(master, image = self.photo)
+        self.displayImage.grid(row = rowNum, column = 0, padx = 60, pady=10)
+        self.displayImage.bind('<Button-1>', master.imageClick)
+        self.displayImageButton = tk.Button(master, image = self.photo, command = master.imageClick)
+        self.displayImage.grid(row = rowNum, column = 0, padx = 60, pady=10)
+        self.displayImageButton2 = tk.Button(master, text = "Close", command = master.destroy)
+        self.displayImage.grid(row = rowNum, column = 0, padx = 60, pady=10)
+
+        self.text_box = tk.Text(master, height = 7, width = 52)
+        self.text_box.grid(row = rowNum, column = 1, padx = 60, pady=10)
+
 
 if __name__ == '__main__':
     app = LeafletCreator()
