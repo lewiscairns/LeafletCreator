@@ -3,7 +3,7 @@ from docx.shared import Inches
 
 def createDocument(title, allRows):
     document = Document()
-    document.add_heading(title, 1)
+    document.add_heading(title, 0)
     for page in allRows:
         table = document.add_table(rows=0, cols=2)
         for row in page[0:]:

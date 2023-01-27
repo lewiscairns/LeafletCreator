@@ -47,7 +47,7 @@ class LeafletCreator(tk.Tk):
                 allRows[pageCounter].append([label, self.retrieveInput(text)])
             pageCounter = pageCounter + 1
         allRows.pop(1)
-        docxFiles.createDocument("test", allRows)
+        docxFiles.createDocument("Lets go running", allRows)
 
     def retrieveInput(self, textBox):
         inputValue = textBox.get("1.0","end-1c")
