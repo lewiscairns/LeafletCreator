@@ -3,10 +3,14 @@ from docx.shared import Inches
 
 def createDocument(title, allRows):
     document = Document()
-    document.add_heading('title', 0)
+    document.add_heading(title, 1)
     for page in allRows:
-        document.add_heading('Page ' + str(page[0]), level=1)
-        for row in page[1:]:
-            document.add_heading(row[0], level=2)
-            document.add_paragraph(row[1])
+        table = document.add_table(rows=0, cols=2)
+        for row in page[0:]:
+            row_cells = table.add_row().cells
+            image = row_cells[0].paragraphs[0]
+            text = row_cells[1].paragraphs[0]
+            run = image.add_run()
+            run.add_picture(row[0], width = Inches(1.75))
+            text.add_run(row[1])
     document.save(title + '.docx')
