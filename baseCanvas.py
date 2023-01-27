@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from PIL import Image, ImageTk
+import docxFiles
 
 pageCounter = 1
 
@@ -36,6 +37,21 @@ class LeafletCreator(tk.Tk):
         self.current_page = (self.current_page - 1) % len(self.pages)
         self.show_page()
 
+    def generate(self):
+        allRows = [[]]
+        pageCounter = 0
+        for page in self.pages:
+            allRows.append([pageCounter])
+            for row in page.row1, page.row2, page.row3, page.row4:
+                label, text = row.getRow()
+                allRows[pageCounter].append([label, self.retrieveInput(text)])
+            pageCounter = pageCounter + 1
+        docxFiles.createDocument("test", allRows)
+
+    def retrieveInput(self, textBox):
+        inputValue = textBox.get("1.0","end-1c")
+        return inputValue
+
 class LeafletPage(tk.Frame):
     def __init__(self, master, number):
         super().__init__(master)
@@ -51,6 +67,9 @@ class LeafletPage(tk.Frame):
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
         self.next_button.grid(row = 1, column = 2, padx = 30, pady=10)
+
+        self.generate_button = tk.Button(self, text="Generate", command=master.generate)
+        self.generate_button.grid(row = 1, column = 3, padx = 30, pady=10)
         
         self.row1 = pageRow(self, 2)
         self.row2 = pageRow(self, 3)
@@ -59,8 +78,8 @@ class LeafletPage(tk.Frame):
 
 class pageRow:
     def __init__(self, master, rowNum):
-        self.defaultImage = "WikiNoImage.png"
-        self.image = Image.open(self.defaultImage)
+        self.filename = "WikiNoImage.png"
+        self.image = Image.open(self.filename)
         self.resizeImage = self.image.resize((150, 150))
         self.photo = ImageTk.PhotoImage(self.resizeImage)
         self.labelImage = tk.Label(master, image = self.photo)
@@ -75,17 +94,17 @@ class pageRow:
 
     def imageClick(self, event = None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
-        filename = fd.askopenfilename(title = 'Open Images', initialdir = '/', filetypes = filetypes)
-        print(filename)
-        self.image = Image.open(filename)
+        self.filename = fd.askopenfilename(title = 'Open Images', initialdir = '/', filetypes = filetypes)
+        print(self.filename)
+        self.image = Image.open(self.filename)
         self.resizeImage = self.image.resize((150, 150))
         self.photo = ImageTk.PhotoImage(self.resizeImage)
         self.labelImage.configure(image = self.photo)
         self.labelImage.image = self.photo
-        self.defaultImage = filename
+        self.defaultImage = self.filename
 
     def getRow(self):
-        return self.labelImage, self.text_box
+        return self.filename, self.text_box
 
 
 if __name__ == '__main__':
