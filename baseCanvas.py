@@ -48,7 +48,8 @@ class LeafletCreator(tk.Tk):
             pageCounter = pageCounter + 1
         allRows.pop(1)
         docxFiles.createDocument("Lets go running", allRows)
-
+        tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
+ 
     def retrieveInput(self, textBox):
         inputValue = textBox.get("1.0","end-1c")
         return inputValue
