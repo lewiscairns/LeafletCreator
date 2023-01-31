@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
+from tkinter.simpledialog import askstring
 from PIL import Image, ImageTk
 import docxFiles
 
@@ -11,7 +12,7 @@ class LeafletCreator(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.title("Leaflet Creator")
+        self.title("Untitled - Leaflet Creator")
         self.geometry("1000x900")
 
         self.pages = []
@@ -19,9 +20,14 @@ class LeafletCreator(tk.Tk):
 
         self.create_page()
 
+    def title_file(self):
+        name = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
+        new_title = name + " - Leaflet Creator"
+        LeafletCreator.title(self, new_title)
+
     def create_page(self):
         global pageCounter
-        self.pages.append(LeafletPage(self, pageCounter))
+        self.pages.append(LeafletPage(self))
         pageCounter = pageCounter + 1
         self.show_page()
 
@@ -58,23 +64,23 @@ class LeafletCreator(tk.Tk):
 
 
 class LeafletPage(tk.Frame):
-    def __init__(self, master, number):
+    def __init__(self, master):
         super().__init__(master)
 
-        self.label = tk.Label(self, text="Page " + str(number))
-        self.label.grid(row=0, column=1, pady=20)
+        self.title_button = tk.Button(self, text="Title", command=master.title_file)
+        self.title_button.grid(row=0, column=0, padx=30, pady=10)
 
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
         self.add_button = tk.Button(self, text="Add New Page", command=master.create_page)
-        self.add_button.grid(row=1, column=1, padx=30, pady=10)
+        self.add_button.grid(row=0, column=1, padx=30, pady=10)
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
-        self.next_button.grid(row=1, column=2, padx=30, pady=10)
+        self.next_button.grid(row=1, column=1, padx=30, pady=10)
 
         self.generate_button = tk.Button(self, text="Generate", command=master.generate)
-        self.generate_button.grid(row=1, column=3, padx=30, pady=10)
+        self.generate_button.grid(row=1, column=2, padx=30, pady=10)
 
         self.row1 = PageRow(self, 2)
         self.row2 = PageRow(self, 3)
