@@ -19,9 +19,17 @@ class LeafletCreator(tk.Tk):
 
         self.create_page()
 
+        self.name_of_doc = "Untitled"
+
+    def title_file(self):
+        name = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
+        self.name_of_doc = name
+        for page in self.pages:
+            page.title.config(text=self.name_of_doc)
+
     def create_page(self):
         global pageCounter
-        self.pages.append(LeafletPage(self, pageCounter))
+        self.pages.append(LeafletPage(self, ))
         pageCounter = pageCounter + 1
         self.show_page()
 
@@ -49,7 +57,7 @@ class LeafletCreator(tk.Tk):
             page_counter = page_counter + 1
         all_rows.pop(1)
         docxFiles.create_document("Lets go running", all_rows)
-        tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
+        tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")#
 
     @staticmethod
     def retrieve_input(text_box):
@@ -58,23 +66,26 @@ class LeafletCreator(tk.Tk):
 
 
 class LeafletPage(tk.Frame):
-    def __init__(self, master, number):
+    def __init__(self, master):
         super().__init__(master)
 
-        self.label = tk.Label(self, text="Page " + str(number))
-        self.label.grid(row=0, column=1, pady=20)
+        self.title = tk.Label(self, text="UntitledYTY")
+        self.title.grid(row=0, column=1, pady=20)
+
+        self.title_button = tk.Button(self, text="Title", command=master.title_file)
+        self.title_button.grid(row=1, column=0, padx=30, pady=10)
 
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
-        self.prev_button.grid(row=1, column=0, padx=30, pady=10)
+        self.prev_button.grid(row=1, column=1, padx=30, pady=10)
 
         self.add_button = tk.Button(self, text="Add New Page", command=master.create_page)
-        self.add_button.grid(row=1, column=1, padx=30, pady=10)
+        self.add_button.grid(row=1, column=2, padx=30, pady=10)
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
-        self.next_button.grid(row=1, column=2, padx=30, pady=10)
+        self.next_button.grid(row=1, column=3, padx=30, pady=10)
 
         self.generate_button = tk.Button(self, text="Generate", command=master.generate)
-        self.generate_button.grid(row=1, column=3, padx=30, pady=10)
+        self.generate_button.grid(row=1, column=4, padx=30, pady=10)
 
         self.row1 = PageRow(self, 2)
         self.row2 = PageRow(self, 3)
