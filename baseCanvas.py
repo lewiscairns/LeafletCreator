@@ -20,9 +20,11 @@ class LeafletCreator(tk.Tk):
 
         self.create_page()
 
+        self.user_title = "Untitled"
+
     def title_file(self):
-        name = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
-        new_title = name + " - Leaflet Creator"
+        self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
+        new_title = self.user_title + " - Leaflet Creator"
         LeafletCreator.title(self, new_title)
 
     def create_page(self):
@@ -54,7 +56,7 @@ class LeafletCreator(tk.Tk):
                 all_rows[page_counter].append([label, self.retrieve_input(text)])
             page_counter = page_counter + 1
         all_rows.pop(1)
-        docxFiles.create_document("Lets go running", all_rows)
+        docxFiles.create_document(self.user_title, all_rows)
         tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
 
     @staticmethod
