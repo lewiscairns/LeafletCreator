@@ -12,6 +12,6 @@ def create_document(title, all_rows):
             image = row_cells[0].paragraphs[0]
             text = row_cells[1].paragraphs[0]
             run = image.add_run()
-            run.add_picture(row[0], width=Inches(1.75))
+            run.add_picture(row[0], width=Inches(1.75), height=Inches(1.75))
             text.add_run(row[1])
     document.save(title + '.docx')
