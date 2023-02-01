@@ -60,6 +60,9 @@ class LeafletCreator(tk.Tk):
         docxFiles.create_document(self.user_title, all_rows, folder_selected)
         tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
 
+    def move_page(self):
+        print("Move Page")
+
     @staticmethod
     def retrieve_input(text_box):
         input_value = text_box.get("1.0", "end-1c")
@@ -73,11 +76,14 @@ class LeafletPage(tk.Frame):
         self.title_button = tk.Button(self, text="Title", command=master.title_file)
         self.title_button.grid(row=0, column=0, padx=30, pady=10)
 
-        self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
-        self.prev_button.grid(row=1, column=0, padx=30, pady=10)
-
         self.add_button = tk.Button(self, text="Add New Page", command=master.create_page)
         self.add_button.grid(row=0, column=1, padx=30, pady=10)
+
+        self.page_move_button = tk.Button(self, text="Move Page", command=master.move_page)
+        self.page_move_button.grid(row=0, column=2, padx=30, pady=10)
+
+        self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
+        self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
         self.next_button.grid(row=1, column=1, padx=30, pady=10)
