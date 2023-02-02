@@ -47,7 +47,6 @@ class LeafletCreator(tk.Tk):
         self.generate_menu.add_command(label="Generate", command=self.generate)
         self.menu_bar.add_cascade(label="Generate", menu=self.generate_menu)
 
-
     def title_file(self):
         self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
         new_title = self.user_title + " - Leaflet Creator"
