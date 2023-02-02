@@ -35,6 +35,8 @@ class LeafletCreator(tk.Tk):
         self.file_menu.add_command(label="Save", command=self.save)
         self.file_menu.add_command(label="Save As", command=self.save_as)
         self.file_menu.add_command(label="Change Title", command=self.title_file)
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label='Exit', command=self.destroy)
         self.menu_bar.add_cascade(label="File", menu=self.file_menu)
 
         self.page_menu = tk.Menu(self.menu_bar, tearoff=False)
