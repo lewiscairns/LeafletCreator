@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import filedialog as fd
-from tkinter import ttk
 from tkinter.messagebox import showinfo
 from tkinter.simpledialog import askstring
 from PIL import Image, ImageTk
@@ -170,26 +169,6 @@ class LeafletPage(tk.Frame):
         self.row2 = PageRow(self, 4)
         self.row3 = PageRow(self, 5)
         self.row4 = PageRow(self, 6)
-
-    def file_selection(self, event):
-        selection = self.file_menu.get()
-        if selection == "New":
-            self.master.new_file()
-        elif selection == "Open":
-            self.master.load()
-        elif selection == "Save":
-            self.master.save()
-        elif selection == "Save As":
-            self.master.save_as()
-        elif selection == "Change Title":
-            self.master.title_file()
-
-    def page_selection(self, event):
-        selection = self.page_menu.get()
-        if selection == "Add New Page":
-            self.master.create_page()
-        elif selection == "Move Page":
-            self.master.move_page()
 
     def add_row(self, label, text):
         if self.row1.text_box.get("1.0", "end-1c") == "":
