@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog as fd
+from tkinter import ttk
 from tkinter.messagebox import showinfo
 from tkinter.simpledialog import askstring
 from PIL import Image, ImageTk
@@ -25,6 +26,27 @@ class LeafletCreator(tk.Tk):
 
         self.saved_folder = ""
 
+        self.menu_bar = tk.Menu(self)
+        self.config(menu=self.menu_bar)
+
+        self.file_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.file_menu.add_command(label="New", command=self.new_file)
+        self.file_menu.add_command(label="Open", command=self.load)
+        self.file_menu.add_command(label="Save", command=self.save)
+        self.file_menu.add_command(label="Save As", command=self.save_as)
+        self.file_menu.add_command(label="Change Title", command=self.title_file)
+        self.menu_bar.add_cascade(label="File", menu=self.file_menu)
+
+        self.page_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.page_menu.add_command(label="New Page", command=self.create_page)
+        self.page_menu.add_command(label="Move Page", command=self.move_page)
+        self.menu_bar.add_cascade(label="Page", menu=self.page_menu)
+
+        self.generate_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.generate_menu.add_command(label="Generate", command=self.generate)
+        self.menu_bar.add_cascade(label="Generate", menu=self.generate_menu)
+
+
     def title_file(self):
         self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
         new_title = self.user_title + " - Leaflet Creator"
@@ -34,6 +56,10 @@ class LeafletCreator(tk.Tk):
         global pageCounter
         self.pages.append(LeafletPage(self))
         pageCounter = pageCounter + 1
+        if len(self.pages) > 1:
+            self.pages[self.current_page].grid_forget()
+            self.current_page = len(self.pages) - 1
+            self.show_page()
         self.show_page()
 
     def show_page(self):
@@ -117,6 +143,9 @@ class LeafletCreator(tk.Tk):
         self.current_page = 0
         self.show_page()
 
+    def new_file(self):
+        print("hello")
+
     @staticmethod
     def retrieve_input(text_box):
         input_value = text_box.get("1.0", "end-1c")
@@ -126,38 +155,39 @@ class LeafletCreator(tk.Tk):
 class LeafletPage(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
-
-        self.title_button = tk.Button(self, text="Title", command=master.title_file)
-        self.title_button.grid(row=0, column=0, padx=30, pady=10)
-
-        self.add_button = tk.Button(self, text="Add New Page", command=master.create_page)
-        self.add_button.grid(row=0, column=1, padx=30, pady=10)
-
-        self.page_move_button = tk.Button(self, text="Move Page", command=master.move_page)
-        self.page_move_button.grid(row=0, column=2, padx=30, pady=10)
-
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
+        self.add_page_button = tk.Button(self, text="Add Page", command=master.create_page)
+        self.add_page_button.grid(row=1, column=1, padx=30, pady=10)
+
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
-        self.next_button.grid(row=1, column=1, padx=30, pady=10)
-
-        self.generate_button = tk.Button(self, text="Generate", command=master.generate)
-        self.generate_button.grid(row=1, column=2, padx=30, pady=10)
-
-        self.save_button = tk.Button(self, text="Save", command=master.save)
-        self.save_button.grid(row=2, column=0, padx=30, pady=10)
-
-        self.load_button = tk.Button(self, text="Load", command=master.load)
-        self.load_button.grid(row=2, column=1, padx=30, pady=10)
-
-        self.save_as_button = tk.Button(self, text="Save As", command=master.save_as)
-        self.save_as_button.grid(row=2, column=2, padx=30, pady=10)
+        self.next_button.grid(row=1, column=2, padx=30, pady=10)
 
         self.row1 = PageRow(self, 3)
         self.row2 = PageRow(self, 4)
         self.row3 = PageRow(self, 5)
         self.row4 = PageRow(self, 6)
+
+    def file_selection(self, event):
+        selection = self.file_menu.get()
+        if selection == "New":
+            self.master.new_file()
+        elif selection == "Open":
+            self.master.load()
+        elif selection == "Save":
+            self.master.save()
+        elif selection == "Save As":
+            self.master.save_as()
+        elif selection == "Change Title":
+            self.master.title_file()
+
+    def page_selection(self, event):
+        selection = self.page_menu.get()
+        if selection == "Add New Page":
+            self.master.create_page()
+        elif selection == "Move Page":
+            self.master.move_page()
 
     def add_row(self, label, text):
         if self.row1.text_box.get("1.0", "end-1c") == "":
