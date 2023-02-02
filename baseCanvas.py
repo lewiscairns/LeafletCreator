@@ -51,15 +51,15 @@ class LeafletCreator(tk.Tk):
 
     def generate(self):
         folder_selected = fd.askdirectory(title="Select Folder To Generate File")
-        all_rows = [[]]
+        all_rows = []
         page_counter = 0
         for page in self.pages:
             all_rows.append([page_counter])
             for row in page.row1, page.row2, page.row3, page.row4:
                 label, text = row.get_row()
                 all_rows[page_counter].append([label, self.retrieve_input(text)])
+                print(all_rows)
             page_counter = page_counter + 1
-        all_rows.pop(1)
         docxFiles.create_document(self.user_title, all_rows, folder_selected)
         tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
 
