@@ -95,34 +95,28 @@ class LeafletCreator(tk.Tk):
     def save_as(self):
         try:
             self.saved_folder = fd.askdirectory(title="Select Folder To Generate File")
-            with open(self.saved_folder + "/" + self.user_title + ".lc", "wb") as file:
-                pages_text = []
-                for page in self.pages:
-                    page_text = []
-                    for row in page.row1, page.row2, page.row3, page.row4:
-                        label, text = row.get_row()
-                        page_text.append([label, self.retrieve_input(text)])
-                    pages_text.append(page_text)
-                data = [self.user_title, pages_text]
-                lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
-                tk.messagebox.showinfo("Success", "Your document has been saved")
+            self.saving()
+            tk.messagebox.showinfo("Success", "Your document has been saved")
         except Exception as e:
             print("Error: " + str(e))
 
     def save(self):
         try:
-            with open(self.saved_folder + "/" + self.user_title + ".lc", "wb") as file:
-                pages_text = []
-                for page in self.pages:
-                    page_text = []
-                    for row in page.row1, page.row2, page.row3, page.row4:
-                        label, text = row.get_row()
-                        page_text.append([label, self.retrieve_input(text)])
-                    pages_text.append(page_text)
-                data = [self.user_title, pages_text]
-                lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
+            self.saving()
         except Exception as e:
             print("Error: " + str(e))
+
+    def saving(self):
+        with open(self.saved_folder + "/" + self.user_title + ".lc", "wb") as file:
+            pages_text = []
+            for page in self.pages:
+                page_text = []
+                for row in page.row1, page.row2, page.row3, page.row4:
+                    label, text = row.get_row()
+                    page_text.append([label, self.retrieve_input(text)])
+                pages_text.append(page_text)
+            data = [self.user_title, pages_text]
+            lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
 
     def load(self):
         self.pages[self.current_page].grid_forget()
