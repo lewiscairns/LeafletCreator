@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter.simpledialog import askstring
+from textblob import TextBlob
 from PIL import Image, ImageTk
 import docxFiles
 import pickle as lc
@@ -182,6 +183,8 @@ class LeafletPage(tk.Frame):
 
 class PageRow:
     def __init__(self, master, row_num):
+        self.words = open("words.txt").read().splitlines()
+
         self.filename = "WikiNoImage.png"
         self.image = Image.open(self.filename)
         self.resizeImage = self.image.resize((150, 150))
@@ -192,9 +195,15 @@ class PageRow:
         self.theMaster = master
 
         self.text_box = tk.Text(master, height=9, width=52)
+        self.text_box.tag_configure("wrong", foreground="red", underline=True)
+        self.text_box.bind("<space>", self.check_spelling)
 
         self.labelImage.grid(row=row_num, column=0, padx=60, pady=10)
         self.text_box.grid(row=row_num, column=1, padx=60, pady=10)
+
+        self.word_menu = tk.Menu(master, tearoff=0)
+        self.word_menu.add_command(label="Ignore Spell Check", command=self.ignore_spell)
+        self.word_menu.suggestions = []
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
@@ -208,6 +217,30 @@ class PageRow:
     def get_row(self):
         return self.filename, self.text_box
 
+    def check_spelling(self, event):
+        index = self.text_box.search(r'\s', "insert", backwards=True, regexp=True)
+        if index == "":
+            index = "1.0"
+        else:
+            index = self.text_box.index("%s+1c" % index)
+        word = self.text_box.get(index, "insert")
+        if word in self.words:
+            self.text_box.tag_remove("wrong", index, "%s+%dc" % (index, len(word)))
+        else:
+            self.text_box.tag_add("wrong", index, "%s+%dc" % (index, len(word)))
+
+    def word_right_click(self, event):
+        try:
+            self.word_menu.tk_popup(event.x_root, event.y_root)
+        finally:
+            self.word_menu.grab_release()
+
+    def ignore_spell(self):
+
+        self.text_box.tag_remove("wrong", index, "%s+%dc" % (index, len(word)))
+
+    def ignore_spell(self):
+        pass
 
 if __name__ == '__main__':
     app = LeafletCreator()
