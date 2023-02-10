@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter.simpledialog import askstring
-from textblob import TextBlob
+import re
+from textblob import Word
 from PIL import Image, ImageTk
 import docxFiles
 import pickle as lc
@@ -197,13 +198,17 @@ class PageRow:
         self.text_box = tk.Text(master, height=9, width=52)
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
         self.text_box.bind("<space>", self.check_spelling)
+        self.text_box.bind("<Button-3>", self.word_right_click)
 
         self.labelImage.grid(row=row_num, column=0, padx=60, pady=10)
         self.text_box.grid(row=row_num, column=1, padx=60, pady=10)
 
         self.word_menu = tk.Menu(master, tearoff=0)
-        self.word_menu.add_command(label="Ignore Spell Check", command=self.ignore_spell)
-        self.word_menu.suggestions = []
+        self.word_menu.add_command(label="Copy", command=self.copy_word)
+        self.word_menu.add_command(label="Paste", command=self.paste_word)
+        self.word_menu.add_separator()
+
+        self.regex = re.compile('[^a-zA-Z]')
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
@@ -230,17 +235,40 @@ class PageRow:
             self.text_box.tag_add("wrong", index, "%s+%dc" % (index, len(word)))
 
     def word_right_click(self, event):
+        is_wrong = False
+        word = ""
         try:
-            self.word_menu.tk_popup(event.x_root, event.y_root)
+            is_wrong, word = self.get_word(event)
+            self.word_menu.tk_popup(event.x_root, event.y_root, 0)
         finally:
+            if is_wrong:
+                self.word_menu.delete(word)
             self.word_menu.grab_release()
 
-    def ignore_spell(self):
+    def get_word(self, event):
+        text = self.text_box.get("@%d,%d wordstart" % (event.x, event.y), "@%d,%d wordend" % (event.x, event.y))
+        word = Word(text)
+        suggestion = word.spellcheck()
+        suggestion_text = suggestion[0]
+        suggestion_text = str(suggestion_text).split(" ", 1)[0]
+        suggestion_text = self.regex.sub('', suggestion_text)
+        if suggestion_text != text:
+            self.word_menu.add_command(label=suggestion_text, command=self.replace_word)
+            return True, suggestion_text
+        else:
+            return False, ""
 
-        self.text_box.tag_remove("wrong", index, "%s+%dc" % (index, len(word)))
+    def copy_word(self):
+        self.text_box.clipboard_clear()
+        self.text_box.clipboard_append(self.text_box.selection_get())
 
-    def ignore_spell(self):
-        pass
+    def paste_word(self):
+        self.text_box.insert(tk.INSERT, self.text_box.clipboard_get())
+
+    def replace_word(self, event):
+        self.text_box.delete("@%d,%d wordstart" % (event.x, event.y), "@%d,%d wordend" % (event.x, event.y))
+        self.text_box.insert(tk.INSERT, self.word_menu.entrycget(0, "label"))
+
 
 if __name__ == '__main__':
     app = LeafletCreator()
