@@ -8,7 +8,6 @@ from textblob import Word
 from PIL import Image, ImageTk
 import docxFiles
 import pickle as lc
-import time
 
 pageCounter = 1
 
@@ -231,11 +230,16 @@ class PageRow:
             index = "1.0"
         else:
             index = self.text_box.index("%s+1c" % index)
-        word = self.text_box.get(index, "insert")
-        if word in self.words:
-            self.text_box.tag_remove("wrong", index, "%s+%dc" % (index, len(word)))
-        else:
+        text = self.text_box.get(index, "insert")
+        word = Word(text)
+        suggestion = word.spellcheck()
+        suggestion_text = suggestion[0]
+        suggestion_text = str(suggestion_text).split(" ", 1)[0]
+        suggestion_text = self.regex.sub('', suggestion_text)
+        if suggestion_text != text and suggestion_text != "n":
             self.text_box.tag_add("wrong", index, "%s+%dc" % (index, len(word)))
+        else:
+            self.text_box.tag_remove("wrong", index, "%s+%dc" % (index, len(word)))
 
     def word_right_click(self, event):
         is_wrong = False
