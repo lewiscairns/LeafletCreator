@@ -2,11 +2,13 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter.simpledialog import askstring
+
 import re
 from textblob import Word
 from PIL import Image, ImageTk
 import docxFiles
 import pickle as lc
+import time
 
 pageCounter = 1
 
@@ -209,6 +211,7 @@ class PageRow:
         self.word_menu.add_separator()
 
         self.regex = re.compile('[^a-zA-Z]')
+        self.replacement_word = ""
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
@@ -236,27 +239,33 @@ class PageRow:
 
     def word_right_click(self, event):
         is_wrong = False
-        word = ""
         try:
-            is_wrong, word = self.get_word(event)
+            is_wrong = self.get_word(event)
+            if is_wrong:
+                self.word_menu.add_command(label=self.replacement_word, command=self.replace_word)
             self.word_menu.tk_popup(event.x_root, event.y_root, 0)
         finally:
             if is_wrong:
-                self.word_menu.delete(word)
+                self.replace_word(is_wrong)
             self.word_menu.grab_release()
 
     def get_word(self, event):
         text = self.text_box.get("@%d,%d wordstart" % (event.x, event.y), "@%d,%d wordend" % (event.x, event.y))
+        self.text_box.mark_set("insert", "@%d,%d" % (event.x, event.y))
+        self.text_box.mark_set("sel.first", "insert wordstart")
+        self.text_box.mark_set("sel.last", "insert wordend")
         word = Word(text)
         suggestion = word.spellcheck()
         suggestion_text = suggestion[0]
         suggestion_text = str(suggestion_text).split(" ", 1)[0]
         suggestion_text = self.regex.sub('', suggestion_text)
-        if suggestion_text != text:
-            self.word_menu.add_command(label=suggestion_text, command=self.replace_word)
-            return True, suggestion_text
+        if suggestion_text == "n":
+            return False
+        elif suggestion_text != text:
+            self.replacement_word = suggestion_text
+            return True
         else:
-            return False, ""
+            return False
 
     def copy_word(self):
         self.text_box.clipboard_clear()
@@ -265,9 +274,14 @@ class PageRow:
     def paste_word(self):
         self.text_box.insert(tk.INSERT, self.text_box.clipboard_get())
 
-    def replace_word(self, event):
-        self.text_box.delete("@%d,%d wordstart" % (event.x, event.y), "@%d,%d wordend" % (event.x, event.y))
-        self.text_box.insert(tk.INSERT, self.word_menu.entrycget(0, "label"))
+    def replace_word(self, is_wrong):
+        if is_wrong:
+            self.text_box.delete("sel.first", "sel.last")
+            self.text_box.insert("sel.first", self.replacement_word)
+        self.word_menu.delete(self.replacement_word)
+
+    def remove_from_menu(self):
+        self.word_menu.delete(self.replacement_word)
 
 
 if __name__ == '__main__':
