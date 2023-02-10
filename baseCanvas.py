@@ -244,7 +244,7 @@ class PageRow:
     def word_right_click(self, event):
         is_wrong = False
         try:
-            is_wrong = self.get_word(event)
+            is_wrong = self.get_word_replacement(event)
             if is_wrong:
                 self.word_menu.add_command(label=self.replacement_word, command=self.replace_word)
             self.word_menu.tk_popup(event.x_root, event.y_root, 0)
@@ -253,7 +253,7 @@ class PageRow:
                 self.replace_word(is_wrong)
             self.word_menu.grab_release()
 
-    def get_word(self, event):
+    def get_word_replacement(self, event):
         text = self.text_box.get("@%d,%d wordstart" % (event.x, event.y), "@%d,%d wordend" % (event.x, event.y))
         self.text_box.mark_set("insert", "@%d,%d" % (event.x, event.y))
         self.text_box.mark_set("sel.first", "insert wordstart")
