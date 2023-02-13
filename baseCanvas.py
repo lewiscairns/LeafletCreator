@@ -1,3 +1,5 @@
+import os
+import sys
 import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
@@ -32,7 +34,7 @@ class LeafletCreator(tk.Tk):
         self.config(menu=self.menu_bar)
 
         self.file_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.file_menu.add_command(label="New", command=self.new_file)
+        self.file_menu.add_command(label="New", command=new_file)
         self.file_menu.add_command(label="Open", command=self.load)
         self.file_menu.add_command(label="Save", command=self.save)
         self.file_menu.add_command(label="Save As", command=self.save_as)
@@ -49,6 +51,8 @@ class LeafletCreator(tk.Tk):
         self.generate_menu = tk.Menu(self.menu_bar, tearoff=False)
         self.generate_menu.add_command(label="Generate", command=self.generate)
         self.menu_bar.add_cascade(label="Generate", menu=self.generate_menu)
+
+        self.lift()
 
     def title_file(self):
         self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
@@ -139,9 +143,6 @@ class LeafletCreator(tk.Tk):
             print("Error: " + str(e))
         self.current_page = 0
         self.show_page()
-
-    def new_file(self):
-        print("hello")
 
     @staticmethod
     def retrieve_input(text_box):
@@ -290,6 +291,10 @@ class PageRow:
             self.text_box.delete("sel.first", "sel.last")
             self.text_box.insert("sel.first", self.replacement_word)
         self.word_menu.delete(self.replacement_word)
+
+
+def new_file():
+    os.execl(sys.executable, sys.executable, *sys.argv)
 
 
 if __name__ == '__main__':
