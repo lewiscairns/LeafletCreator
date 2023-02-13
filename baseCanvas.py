@@ -167,17 +167,24 @@ class LeafletPage(tk.Frame):
         self.row4 = PageRow(self, 6)
 
     def add_row(self, label, text):
+        image = Image.open(label)
+        resize_image = image.resize((150, 150))
+        photo = ImageTk.PhotoImage(resize_image)
         if self.row1.text_box.get("1.0", "end-1c") == "":
-            self.row1.labelImage.configure(text=label)
+            self.row1.label_image.configure(image=photo)
+            self.row1.label_image.image = photo
             self.row1.text_box.insert(tk.END, text)
         elif self.row2.text_box.get("1.0", "end-1c") == "":
-            self.row2.labelImage.configure(text=label)
+            self.row2.label_image.configure(image=photo)
+            self.row2.label_image.image = photo
             self.row2.text_box.insert(tk.END, text)
         elif self.row3.text_box.get("1.0", "end-1c") == "":
-            self.row3.labelImage.configure(text=label)
+            self.row3.label_image.configure(image=photo)
+            self.row3.label_image.image = photo
             self.row3.text_box.insert(tk.END, text)
         elif self.row4.text_box.get("1.0", "end-1c") == "":
-            self.row4.labelImage.configure(text=label)
+            self.row4.label_image.configure(image=photo)
+            self.row4.label_image.image = photo
             self.row4.text_box.insert(tk.END, text)
         else:
             print("Error: No more rows available")
@@ -189,11 +196,11 @@ class PageRow:
 
         self.filename = "WikiNoImage.png"
         self.image = Image.open(self.filename)
-        self.resizeImage = self.image.resize((150, 150))
-        self.photo = ImageTk.PhotoImage(self.resizeImage)
-        self.labelImage = tk.Label(master, image=self.photo)
-        self.labelImage.image = self.photo
-        self.labelImage.bind("<Button-1>", self.image_click)
+        self.resize_image = self.image.resize((150, 150))
+        self.photo = ImageTk.PhotoImage(self.resize_image)
+        self.label_image = tk.Label(master, image=self.photo)
+        self.label_image.image = self.photo
+        self.label_image.bind("<Button-1>", self.image_click)
         self.theMaster = master
 
         self.text_box = tk.Text(master, height=9, width=52)
@@ -201,7 +208,7 @@ class PageRow:
         self.text_box.bind("<space>", self.check_spelling)
         self.text_box.bind("<Button-3>", self.word_right_click)
 
-        self.labelImage.grid(row=row_num, column=0, padx=60, pady=10)
+        self.label_image.grid(row=row_num, column=0, padx=60, pady=10)
         self.text_box.grid(row=row_num, column=1, padx=60, pady=10)
 
         self.word_menu = tk.Menu(master, tearoff=0)
@@ -216,10 +223,10 @@ class PageRow:
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
         self.filename = fd.askopenfilename(title='Open Images', initialdir='/', filetypes=filetypes)
         self.image = Image.open(self.filename)
-        self.resizeImage = self.image.resize((150, 150))
-        self.photo = ImageTk.PhotoImage(self.resizeImage)
-        self.labelImage.configure(image=self.photo)
-        self.labelImage.image = self.photo
+        self.resize_image = self.image.resize((150, 150))
+        self.photo = ImageTk.PhotoImage(self.resize_image)
+        self.label_image.configure(image=self.photo)
+        self.label_image.image = self.photo
 
     def get_row(self):
         return self.filename, self.text_box
@@ -282,9 +289,6 @@ class PageRow:
         if is_wrong:
             self.text_box.delete("sel.first", "sel.last")
             self.text_box.insert("sel.first", self.replacement_word)
-        self.word_menu.delete(self.replacement_word)
-
-    def remove_from_menu(self):
         self.word_menu.delete(self.replacement_word)
 
 
