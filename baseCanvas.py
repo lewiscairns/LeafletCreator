@@ -155,9 +155,6 @@ class LeafletPage(tk.Frame):
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
-        self.add_page_button = tk.Button(self, text="Add Page", command=master.create_page)
-        self.add_page_button.grid(row=1, column=1, padx=30, pady=10)
-
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
         self.next_button.grid(row=1, column=2, padx=30, pady=10)
 
