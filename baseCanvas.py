@@ -203,7 +203,7 @@ class PageRow:
         self.label_image.bind("<Button-1>", self.image_click)
         self.theMaster = master
 
-        self.text_box = tk.Text(master, height=9, width=52)
+        self.text_box = tk.Text(master, height=9, width=52, wrap="word")
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
         self.text_box.bind("<space>", self.check_spelling)
         self.text_box.bind("<Button-3>", self.word_right_click)
