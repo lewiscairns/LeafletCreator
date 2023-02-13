@@ -244,6 +244,7 @@ class PageRow:
         suggestion_text = suggestion[0]
         suggestion_text = str(suggestion_text).split(" ", 1)[0]
         suggestion_text = self.regex.sub('', suggestion_text)
+        text = self.regex.sub('', text)
         if suggestion_text != text and suggestion_text != "n":
             self.text_box.tag_add("wrong", index, "%s+%dc" % (index, len(word)))
         else:
