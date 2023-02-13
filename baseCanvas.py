@@ -26,7 +26,7 @@ class LeafletCreator(tk.Tk):
 
         self.user_title = "Untitled"
 
-        self.saved_folder = ""
+        self.saved_folder = "C:\Leaflets"
 
         self.menu_bar = tk.Menu(self)
         self.config(menu=self.menu_bar)
