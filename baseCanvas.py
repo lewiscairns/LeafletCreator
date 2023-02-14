@@ -5,6 +5,7 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter.simpledialog import askstring
 
+import numpy as np
 import textstat
 import re
 from textblob import Word
@@ -194,7 +195,8 @@ class LeafletPage(tk.Frame):
 
 class PageRow:
     def __init__(self, master, row_num):
-        self.theMaster = master
+        self.master = master
+        self.row_num = row_num
 
         self.filename = "WikiNoImage.png"
         self.image = Image.open(self.filename)
@@ -230,32 +232,50 @@ class PageRow:
         self.replacement_word = ""
 
         self.sentence_complexity = "Good"
-        self.sentence_issues = [False, False]
+        self.sentence_issues = np.array([False, False])
         self.reading_level = 0
         self.word_length = 0
+        self.complexity_recommendations = ["", ""]
+        self.complexity_icon.bind("<Button-1>", self.show_complexity_recommendations)
 
         self.num_spaces = 0
 
+    def show_complexity_recommendations(self, event):
+        recommendation_text = ""
+        for recommendation in self.complexity_recommendations:
+            if recommendation != "":
+                recommendation_text += "\n" + recommendation
+        if recommendation_text == "":
+            recommendation_text = "No recommendations available"
+        top = tk.Toplevel(self.master)
+        top.geometry("300x150")
+        top.title("Recommendations")
+        top_label = tk.Label(top, text=recommendation_text)
+        top_button = tk.Button(top, text="Close", command=top.destroy)
+        top_label.pack()
+        top_button.pack()
+
     def check_sentence(self, event):
         self.reading_level = textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
-        if self.reading_level < 75:
+        if self.reading_level < 90:
             self.sentence_issues[0] = True
-        elif self.reading_level > 75:
+        elif self.reading_level > 90:
             self.sentence_issues[0] = False
 
-        self.word_length = len(self.text_box.get("1.0", "end-1c"))
+        self.word_length = len(self.text_box.get("1.0", "end-1c").split())
         if self.word_length > 10:
             self.sentence_issues[1] = True
+            self.complexity_recommendations[1] = "Try to keep your sentences under 10 words."
         elif self.word_length < 10:
             self.sentence_issues[1] = False
-
+            self.complexity_recommendations[1] = ""
         self.update_complexity()
 
     def update_complexity(self):
-        if len(self.sentence_issues) > 0:
-            self.sentence_complexity = "Average"
-        elif len(self.sentence_issues) > 3:
+        if np.count_nonzero(self.sentence_issues) > 1:
             self.sentence_complexity = "Bad"
+        elif np.count_nonzero(self.sentence_issues) > 0:
+            self.sentence_complexity = "Average"
         else:
             self.sentence_complexity = "Good"
         self.update_complexity_image()
@@ -264,13 +284,14 @@ class PageRow:
         if self.sentence_complexity == "Good":
             self.complexity_filename = "WikiGreenCircle.png"
         elif self.sentence_complexity == "Average":
-            self.complexity_filename = "WikiGreenCircle.png"
+            self.complexity_filename = "WikiYellowCircle.png"
         else:
             self.complexity_filename = "WikiRedCircle.png"
+
         self.complexity_image = Image.open(self.complexity_filename)
         self.complexity_resize_image = self.complexity_image.resize((100, 100))
         self.complexity_photo = ImageTk.PhotoImage(self.complexity_resize_image)
-        self.complexity_icon = tk.Label(self.theMaster, image=self.complexity_photo)
+        self.complexity_icon.configure(image=self.complexity_photo)
         self.complexity_icon.image = self.complexity_photo
 
     def image_click(self, event=None):
