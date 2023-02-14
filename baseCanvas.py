@@ -193,7 +193,7 @@ class LeafletPage(tk.Frame):
 
 class PageRow:
     def __init__(self, master, row_num):
-        self.words = open("words.txt").read().splitlines()
+        self.theMaster = master
 
         self.filename = "WikiNoImage.png"
         self.image = Image.open(self.filename)
@@ -202,7 +202,6 @@ class PageRow:
         self.label_image = tk.Label(master, image=self.photo)
         self.label_image.image = self.photo
         self.label_image.bind("<Button-1>", self.image_click)
-        self.theMaster = master
 
         self.text_box = tk.Text(master, height=9, width=52, wrap="word")
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
@@ -220,7 +219,28 @@ class PageRow:
         self.regex = re.compile('[^a-zA-Z]')
         self.replacement_word = ""
 
+        self.sentence_complexity = "Good"
+        self.sentence_issues = []
+        self.complexity_filename =
+
         self.num_spaces = 0
+
+    def update_complexity(self):
+        if len(self.sentence_issues) > 0:
+            self.sentence_complexity = "Average"
+        elif len(self.sentence_issues) > 3:
+            self.sentence_complexity = "Bad"
+        else:
+            self.sentence_complexity = "Good"
+        self.complexity_image()
+
+    def complexity_image(self):
+        if self.sentence_complexity == "Good":
+
+        elif self.sentence_complexity == "Average":
+
+        else:
+
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
