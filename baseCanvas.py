@@ -206,7 +206,7 @@ class PageRow:
 
         self.text_box = tk.Text(master, height=9, width=52, wrap="word")
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
-        self.text_box.bind("<space>", self.check_spelling)
+        self.text_box.bind("<KeyRelease>", self.check_spelling)
         self.text_box.bind("<Button-3>", self.word_right_click)
 
         self.label_image.grid(row=row_num, column=0, padx=60, pady=10)
@@ -219,6 +219,8 @@ class PageRow:
 
         self.regex = re.compile('[^a-zA-Z]')
         self.replacement_word = ""
+
+        self.num_spaces = 0
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
@@ -233,22 +235,21 @@ class PageRow:
         return self.filename, self.text_box
 
     def check_spelling(self, event):
-        index = self.text_box.search(r'\s', "insert", backwards=True, regexp=True)
-        if index == "":
-            index = "1.0"
-        else:
-            index = self.text_box.index("%s+1c" % index)
-        text = self.text_box.get(index, "insert")
-        word = Word(text)
-        suggestion = word.spellcheck()
-        suggestion_text = suggestion[0]
-        suggestion_text = str(suggestion_text).split(" ", 1)[0]
-        suggestion_text = self.regex.sub('', suggestion_text)
-        text = self.regex.sub('', text)
-        if suggestion_text != text and suggestion_text != "n":
-            self.text_box.tag_add("wrong", index, "%s+%dc" % (index, len(word)))
-        else:
-            self.text_box.tag_remove("wrong", index, "%s+%dc" % (index, len(word)))
+        text = self.text_box.get("1.0", END)
+        current_spaces = text.count(' ')
+        if current_spaces != self.num_spaces:
+            self.num_spaces = current_spaces
+            for word in text.split(' '):
+                suggestion = Word.spellcheck(Word(word))
+                suggestion_text = suggestion[0]
+                suggestion_text = str(suggestion_text).split(" ", 1)[0]
+                suggestion_text = self.regex.sub('', suggestion_text)
+                word = self.regex.sub('', word)
+                position = text.find(word)
+                if suggestion_text != text and suggestion_text != "n":
+                    self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
+                else:
+                    self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
 
     def word_right_click(self, event):
         is_wrong = False
