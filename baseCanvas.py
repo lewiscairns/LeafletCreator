@@ -5,6 +5,7 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 from tkinter.simpledialog import askstring
 
+import textstat
 import re
 from textblob import Word
 from PIL import Image, ImageTk
@@ -208,8 +209,16 @@ class PageRow:
         self.text_box.bind("<KeyRelease>", self.check_spelling)
         self.text_box.bind("<Button-3>", self.word_right_click)
 
+        self.complexity_filename = "WikiGreenCircle.png"
+        self.complexity_image = Image.open(self.complexity_filename)
+        self.complexity_resize_image = self.complexity_image.resize((100, 100))
+        self.complexity_photo = ImageTk.PhotoImage(self.complexity_resize_image)
+        self.complexity_icon = tk.Label(master, image=self.complexity_photo)
+        self.complexity_icon.image = self.complexity_photo
+
         self.label_image.grid(row=row_num, column=0, padx=60, pady=10)
         self.text_box.grid(row=row_num, column=1, padx=60, pady=10)
+        self.complexity_icon.grid(row=row_num, column=2, padx=60, pady=10)
 
         self.word_menu = tk.Menu(master, tearoff=0)
         self.word_menu.add_command(label="Copy", command=self.copy_word)
@@ -221,9 +230,11 @@ class PageRow:
 
         self.sentence_complexity = "Good"
         self.sentence_issues = []
-        self.complexity_filename =
 
         self.num_spaces = 0
+
+    def check_sentence(self):
+        textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
 
     def update_complexity(self):
         if len(self.sentence_issues) > 0:
@@ -232,15 +243,20 @@ class PageRow:
             self.sentence_complexity = "Bad"
         else:
             self.sentence_complexity = "Good"
-        self.complexity_image()
+        self.update_complexity_image()
 
-    def complexity_image(self):
+    def update_complexity_image(self):
         if self.sentence_complexity == "Good":
-
+            self.complexity_filename = "WikiGreenCircle.png"
         elif self.sentence_complexity == "Average":
-
+            self.complexity_filename = "WikiGreenCircle.png"
         else:
-
+            self.complexity_filename = "WikiRedCircle.png"
+        self.complexity_image = Image.open(self.complexity_filename)
+        self.complexity_resize_image = self.complexity_image.resize((100, 100))
+        self.complexity_photo = ImageTk.PhotoImage(self.complexity_resize_image)
+        self.complexity_icon = tk.Label(self.theMaster, image=self.complexity_photo)
+        self.complexity_icon.image = self.complexity_photo
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
