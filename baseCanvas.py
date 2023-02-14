@@ -207,6 +207,7 @@ class PageRow:
         self.text_box = tk.Text(master, height=9, width=52, wrap="word")
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
         self.text_box.bind("<KeyRelease>", self.check_spelling)
+        self.text_box.bind("<space>", self.check_sentence)
         self.text_box.bind("<Button-3>", self.word_right_click)
 
         self.complexity_filename = "WikiGreenCircle.png"
@@ -229,12 +230,26 @@ class PageRow:
         self.replacement_word = ""
 
         self.sentence_complexity = "Good"
-        self.sentence_issues = []
+        self.sentence_issues = [False, False]
+        self.reading_level = 0
+        self.word_length = 0
 
         self.num_spaces = 0
 
-    def check_sentence(self):
-        textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
+    def check_sentence(self, event):
+        self.reading_level = textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
+        if self.reading_level < 75:
+            self.sentence_issues[0] = True
+        elif self.reading_level > 75:
+            self.sentence_issues[0] = False
+
+        self.word_length = len(self.text_box.get("1.0", "end-1c"))
+        if self.word_length > 10:
+            self.sentence_issues[1] = True
+        elif self.word_length < 10:
+            self.sentence_issues[1] = False
+
+        self.update_complexity()
 
     def update_complexity(self):
         if len(self.sentence_issues) > 0:
