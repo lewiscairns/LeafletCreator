@@ -235,21 +235,22 @@ class PageRow:
         return self.filename, self.text_box
 
     def check_spelling(self, event):
-        text = self.text_box.get("1.0", END)
+        text = self.text_box.get("1.0", tk.END)
         current_spaces = text.count(' ')
         if current_spaces != self.num_spaces:
             self.num_spaces = current_spaces
             for word in text.split(' '):
+                word_positions = [i for i in range(len(text)) if text.startswith(word, i)]
                 suggestion = Word.spellcheck(Word(word))
                 suggestion_text = suggestion[0]
                 suggestion_text = str(suggestion_text).split(" ", 1)[0]
                 suggestion_text = self.regex.sub('', suggestion_text)
                 word = self.regex.sub('', word)
-                position = text.find(word)
-                if suggestion_text != text and suggestion_text != "n":
-                    self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
-                else:
-                    self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
+                for position in word_positions:
+                    if suggestion_text != word and suggestion_text != "n":
+                        self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
+                    else:
+                        self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
 
     def word_right_click(self, event):
         is_wrong = False
