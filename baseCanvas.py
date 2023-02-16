@@ -158,7 +158,7 @@ class LeafletCreator(tk.Tk):
         ChangeReading(self)
 
     def change_word_count(self):
-        print("Word Count")
+        ChangeWordCount(self)
 
     @staticmethod
     def retrieve_input(text_box):
@@ -178,6 +178,7 @@ class ChangeReading:
         self.top_reading_level = tk.IntVar()
         self.top_reading_level.set(self.master.reading_level)
         self.top_entry = tk.Entry(self.top, textvariable=self.top_reading_level)
+        self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
         self.top_label.grid(row=0, column=0, columnspan=2)
         self.top_button_up.grid(row=1, column=0)
@@ -192,6 +193,35 @@ class ChangeReading:
     def decrease_reading_level(self):
         self.master.reading_level = self.master.reading_level - 1
         self.top_reading_level.set(self.master.reading_level)
+
+
+class ChangeWordCount:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Word Count")
+        self.top_label = tk.Label(self.top, text="Recommended Word Count is 10")
+        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_word_count)
+        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_word_count)
+        self.top_word_count = tk.IntVar()
+        self.top_word_count.set(self.master.word_count)
+        self.top_entry = tk.Entry(self.top, textvariable=self.top_word_count)
+        self.top_entry.configure(state="readonly")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_button_up.grid(row=1, column=0)
+        self.top_entry.grid(row=1, column=1)
+        self.top_button_down.grid(row=1, column=2)
+        self.top_button.grid(row=2, column=0, columnspan=2)
+
+    def increase_word_count(self):
+        self.master.word_count = self.master.word_count + 1
+        self.top_word_count.set(self.master.word_count)
+
+    def decrease_word_count(self):
+        self.master.word_count = self.master.word_count - 1
+        self.top_word_count.set(self.master.word_count)
 
 
 class LeafletPage(tk.Frame):
@@ -302,7 +332,7 @@ class PageRow:
         self.reading_level = textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
         if self.reading_level < self.leaflet_master.reading_level:
             self.sentence_issues[0] = True
-            self.complexity_recommendations[0] = "Reading level is: " + str(self.reading_level) + ".\nTry keep it below " + str(self.leaflet_master.reading_level) + " ."
+            self.complexity_recommendations[0] = "Reading level is: " + str(round(self.reading_level)) + ".\nTry keep it below " + str(self.leaflet_master.reading_level) + " ."
         elif self.reading_level > self.leaflet_master.reading_level:
             self.sentence_issues[0] = False
             self.complexity_recommendations[0] = ""
