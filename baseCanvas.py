@@ -54,6 +54,14 @@ class LeafletCreator(tk.Tk):
         self.generate_menu.add_command(label="Generate", command=self.generate)
         self.menu_bar.add_cascade(label="Generate", menu=self.generate_menu)
 
+        self.recommendation_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.recommendation_menu.add_command(label="Reading Level", command=self.change_reading_level)
+        self.recommendation_menu.add_command(label="Word Count", command=self.change_word_count)
+        self.menu_bar.add_cascade(label="Recommendations", menu=self.recommendation_menu)
+
+        self.reading_level = 90
+        self.word_count = 10
+
         self.lift()
 
     def title_file(self):
@@ -146,10 +154,44 @@ class LeafletCreator(tk.Tk):
         self.current_page = 0
         self.show_page()
 
+    def change_reading_level(self):
+        ChangeReading(self)
+
+    def change_word_count(self):
+        print("Word Count")
+
     @staticmethod
     def retrieve_input(text_box):
         input_value = text_box.get("1.0", "end-1c")
         return input_value
+
+
+class ChangeReading:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Reading Level")
+        self.top_label = tk.Label(self.top, text="Recommended Reading Level is 90")
+        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_reading_level)
+        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_reading_level)
+        self.top_reading_level = tk.IntVar()
+        self.top_reading_level.set(self.master.reading_level)
+        self.top_entry = tk.Entry(self.top, textvariable=self.top_reading_level)
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_button_up.grid(row=1, column=0)
+        self.top_entry.grid(row=1, column=1)
+        self.top_button_down.grid(row=1, column=2)
+        self.top_button.grid(row=2, column=0, columnspan=2)
+
+    def increase_reading_level(self):
+        self.master.reading_level = self.master.reading_level + 1
+        self.top_reading_level.set(self.master.reading_level)
+
+    def decrease_reading_level(self):
+        self.master.reading_level = self.master.reading_level - 1
+        self.top_reading_level.set(self.master.reading_level)
 
 
 class LeafletPage(tk.Frame):
@@ -164,10 +206,10 @@ class LeafletPage(tk.Frame):
         self.next_button = tk.Button(self, text="Next", command=master.next_page)
         self.next_button.grid(row=1, column=2, padx=30, pady=10)
 
-        self.row1 = PageRow(self, 3)
-        self.row2 = PageRow(self, 4)
-        self.row3 = PageRow(self, 5)
-        self.row4 = PageRow(self, 6)
+        self.row1 = PageRow(self, 3, master)
+        self.row2 = PageRow(self, 4, master)
+        self.row3 = PageRow(self, 5, master)
+        self.row4 = PageRow(self, 6, master)
 
     def add_row(self, label, text):
         image = Image.open(label)
@@ -194,7 +236,8 @@ class LeafletPage(tk.Frame):
 
 
 class PageRow:
-    def __init__(self, master, row_num):
+    def __init__(self, master, row_num, leaflet_master):
+        self.leaflet_master = leaflet_master
         self.master = master
         self.row_num = row_num
 
@@ -234,7 +277,7 @@ class PageRow:
         self.sentence_complexity = "Good"
         self.sentence_issues = np.array([False, False])
         self.reading_level = 0
-        self.word_length = 0
+        self.word_count = 0
         self.complexity_recommendations = ["", ""]
         self.complexity_icon.bind("<Button-1>", self.show_complexity_recommendations)
 
@@ -257,16 +300,18 @@ class PageRow:
 
     def check_sentence(self, event):
         self.reading_level = textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
-        if self.reading_level < 90:
+        if self.reading_level < self.leaflet_master.reading_level:
             self.sentence_issues[0] = True
-        elif self.reading_level > 90:
+            self.complexity_recommendations[0] = "Reading level is: " + str(self.reading_level) + ".\nTry keep it below " + str(self.leaflet_master.reading_level) + " ."
+        elif self.reading_level > self.leaflet_master.reading_level:
             self.sentence_issues[0] = False
+            self.complexity_recommendations[0] = ""
 
-        self.word_length = len(self.text_box.get("1.0", "end-1c").split())
-        if self.word_length > 10:
+        self.word_count = len(self.text_box.get("1.0", "end-1c").split())
+        if self.word_count > self.leaflet_master.word_count:
             self.sentence_issues[1] = True
             self.complexity_recommendations[1] = "Try to keep your sentences under 10 words."
-        elif self.word_length < 10:
+        elif self.word_count < self.leaflet_master.word_count:
             self.sentence_issues[1] = False
             self.complexity_recommendations[1] = ""
         self.update_complexity()
