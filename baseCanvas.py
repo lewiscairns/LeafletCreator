@@ -61,6 +61,8 @@ class LeafletCreator(tk.Tk):
 
         self.reading_level = 90
         self.word_count = 10
+        self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
+        self.ignore_uncommon_words = [""]
 
         self.lift()
 
@@ -281,6 +283,7 @@ class PageRow:
 
         self.text_box = tk.Text(master, height=9, width=52, wrap="word")
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
+        self.text_box.tag_configure("uncommon", foreground="blue", underline=True)
         self.text_box.bind("<KeyRelease>", self.check_spelling)
         self.text_box.bind("<space>", self.check_sentence)
         self.text_box.bind("<Button-3>", self.word_right_click)
@@ -310,6 +313,8 @@ class PageRow:
         self.word_count = 0
         self.complexity_recommendations = ["", ""]
         self.complexity_icon.bind("<Button-1>", self.show_complexity_recommendations)
+        self.misspelled_tag = []
+        self.text = ""
 
         self.num_spaces = 0
 
@@ -381,23 +386,17 @@ class PageRow:
     def get_row(self):
         return self.filename, self.text_box
 
-    def check_spelling(self, event):
-        text = self.text_box.get("1.0", tk.END)
-        current_spaces = text.count(' ')
-        if current_spaces != self.num_spaces:
-            self.num_spaces = current_spaces
-            for word in text.split(' '):
-                word_positions = [i for i in range(len(text)) if text.startswith(word, i)]
-                suggestion = Word.spellcheck(Word(word))
-                suggestion_text = suggestion[0]
-                suggestion_text = str(suggestion_text).split(" ", 1)[0]
-                suggestion_text = self.regex.sub('', suggestion_text)
-                word = self.regex.sub('', word)
-                for position in word_positions:
-                    if suggestion_text != word and suggestion_text != "n":
-                        self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
-                    else:
-                        self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
+    def word_complexity_check(self):
+        for word in self.text.split(' '):
+            word_positions = [i for i in range(len(self.text)) if self.text.startswith(word, i)]
+            word = self.regex.sub('', word)
+            for position in word_positions:
+                if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words:
+                    self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
+                elif position in self.misspelled_tag:
+                    self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
+                else:
+                    self.text_box.tag_add("uncommon", f'1.{position}', f'1.{position + len(word)}')
 
     def word_right_click(self, event):
         is_wrong = False
@@ -442,6 +441,27 @@ class PageRow:
             self.text_box.insert("sel.first", self.replacement_word)
         self.word_menu.delete(self.replacement_word)
 
+    def check_spelling(self, event):
+        self.text = self.text_box.get("1.0", tk.END)
+        current_spaces = self.text.count(' ')
+        self.misspelled_tag = []
+        if current_spaces != self.num_spaces:
+            self.num_spaces = current_spaces
+            for word in self.text.split(' '):
+                word_positions = [i for i in range(len(self.text)) if self.text.startswith(word, i)]
+                suggestion = Word.spellcheck(Word(word))
+                suggestion_text = suggestion[0]
+                suggestion_text = str(suggestion_text).split(" ", 1)[0]
+                suggestion_text = self.regex.sub('', suggestion_text)
+                word = self.regex.sub('', word)
+                for position in word_positions:
+                    self.misspelled_tag.append(position)
+                    if suggestion_text != word and suggestion_text != "n":
+                        self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
+                    else:
+                        self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
+                        self.misspelled_tag.remove(position)
+            self.word_complexity_check()
 
 def new_file():
     os.execl(sys.executable, sys.executable, *sys.argv)
