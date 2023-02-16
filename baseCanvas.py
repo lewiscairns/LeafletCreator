@@ -332,7 +332,7 @@ class PageRow:
         self.reading_level = textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
         if self.reading_level < self.leaflet_master.reading_level:
             self.sentence_issues[0] = True
-            self.complexity_recommendations[0] = "Reading level is: " + str(round(self.reading_level)) + ".\nTry keep it below " + str(self.leaflet_master.reading_level) + " ."
+            self.complexity_recommendations[0] = "Reading level is: " + str(round(self.reading_level)) + "\nTry keep it below " + str(self.leaflet_master.reading_level) + ".\n"
         elif self.reading_level > self.leaflet_master.reading_level:
             self.sentence_issues[0] = False
             self.complexity_recommendations[0] = ""
@@ -340,7 +340,7 @@ class PageRow:
         self.word_count = len(self.text_box.get("1.0", "end-1c").split())
         if self.word_count > self.leaflet_master.word_count:
             self.sentence_issues[1] = True
-            self.complexity_recommendations[1] = "Try to keep your sentences under 10 words."
+            self.complexity_recommendations[1] = "Current word count is: " + str(self.word_count) + "\nTry keep it below " + str(self.leaflet_master.word_count) + " words.\n"
         elif self.word_count < self.leaflet_master.word_count:
             self.sentence_issues[1] = False
             self.complexity_recommendations[1] = ""
