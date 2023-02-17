@@ -12,6 +12,7 @@ from textblob import Word
 from PIL import Image, ImageTk
 import docxFiles
 import pickle as lc
+from nltk.corpus import wordnet
 
 pageCounter = 1
 
@@ -299,13 +300,9 @@ class PageRow:
         self.text_box.grid(row=row_num, column=1, padx=60, pady=10)
         self.complexity_icon.grid(row=row_num, column=2, padx=60, pady=10)
 
-        self.word_menu = tk.Menu(master, tearoff=0)
-        self.word_menu.add_command(label="Copy", command=self.copy_word)
-        self.word_menu.add_command(label="Paste", command=self.paste_word)
-        self.word_menu.add_separator()
-
         self.regex = re.compile('[^a-zA-Z]')
         self.replacement_word = ""
+        self.synonyms = []
 
         self.sentence_complexity = "Good"
         self.sentence_issues = np.array([False, False])
@@ -337,7 +334,8 @@ class PageRow:
         self.reading_level = textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
         if self.reading_level < self.leaflet_master.reading_level:
             self.sentence_issues[0] = True
-            self.complexity_recommendations[0] = "Reading level is: " + str(round(self.reading_level)) + "\nTry keep it below " + str(self.leaflet_master.reading_level) + ".\n"
+            self.complexity_recommendations[0] = "Reading level is: " + str(
+                round(self.reading_level)) + "\nTry keep it below " + str(self.leaflet_master.reading_level) + ".\n"
         elif self.reading_level > self.leaflet_master.reading_level:
             self.sentence_issues[0] = False
             self.complexity_recommendations[0] = ""
@@ -345,7 +343,8 @@ class PageRow:
         self.word_count = len(self.text_box.get("1.0", "end-1c").split())
         if self.word_count > self.leaflet_master.word_count:
             self.sentence_issues[1] = True
-            self.complexity_recommendations[1] = "Current word count is: " + str(self.word_count) + "\nTry keep it below " + str(self.leaflet_master.word_count) + " words.\n"
+            self.complexity_recommendations[1] = "Current word count is: " + str(
+                self.word_count) + "\nTry keep it below " + str(self.leaflet_master.word_count) + " words.\n"
         elif self.word_count < self.leaflet_master.word_count:
             self.sentence_issues[1] = False
             self.complexity_recommendations[1] = ""
@@ -399,34 +398,47 @@ class PageRow:
                     self.text_box.tag_add("uncommon", f'1.{position}', f'1.{position + len(word)}')
 
     def word_right_click(self, event):
-        is_wrong = False
-        try:
-            is_wrong = self.get_word_replacement(event)
-            if is_wrong:
-                self.word_menu.add_command(label=self.replacement_word, command=self.replace_word)
-            self.word_menu.tk_popup(event.x_root, event.y_root, 0)
-        finally:
-            if is_wrong:
-                self.replace_word(is_wrong)
-            self.word_menu.grab_release()
-
-    def get_word_replacement(self, event):
-        text = self.text_box.get("@%d,%d wordstart" % (event.x, event.y), "@%d,%d wordend" % (event.x, event.y))
+        word = self.text_box.get("@%d,%d wordstart" % (event.x, event.y), "@%d,%d wordend" % (event.x, event.y))
         self.text_box.mark_set("insert", "@%d,%d" % (event.x, event.y))
         self.text_box.mark_set("sel.first", "insert wordstart")
         self.text_box.mark_set("sel.last", "insert wordend")
-        word = Word(text)
-        suggestion = word.spellcheck()
+        word_menu = tk.Menu(self.master, tearoff=0)
+        word_menu.add_command(label="Copy", command=self.copy_word)
+        word_menu.add_command(label="Paste", command=self.paste_word)
+        is_wrong = self.get_word_replacement(word)
+        is_uncommon = self.get_word_synonym(word)
+        if is_wrong:
+            word_menu.add_separator()
+            word_menu.add_command(label=self.replacement_word, command=self.replace_word)
+        elif is_uncommon:
+            word_menu.add_separator()
+            word_menu.add_command(label=self.synonyms[1], command=self.replace_synonym)
+            word_menu.add_separator()
+            word_menu.add_command(label="ignore", command=self.leaflet_master.ignore_uncommon_words.append(word))
+        word_menu.tk_popup(event.x_root, event.y_root, 0)
+
+    def get_word_replacement(self, word):
+        text = Word(word)
+        suggestion = text.spellcheck()
         suggestion_text = suggestion[0]
         suggestion_text = str(suggestion_text).split(" ", 1)[0]
         suggestion_text = self.regex.sub('', suggestion_text)
         if suggestion_text == "n":
             return False
-        elif suggestion_text != text:
+        elif suggestion_text != word:
             self.replacement_word = suggestion_text
             return True
         else:
             return False
+
+    def get_word_synonym(self, word):
+        if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words:
+            return False
+        else:
+            for syn in wordnet.synsets(word):
+                for lemma in syn.lemmas():
+                    self.synonyms.append(lemma.name())
+            return True
 
     def copy_word(self):
         self.text_box.clipboard_clear()
@@ -435,11 +447,15 @@ class PageRow:
     def paste_word(self):
         self.text_box.insert(tk.INSERT, self.text_box.clipboard_get())
 
-    def replace_word(self, is_wrong):
-        if is_wrong:
-            self.text_box.delete("sel.first", "sel.last")
-            self.text_box.insert("sel.first", self.replacement_word)
-        self.word_menu.delete(self.replacement_word)
+    def replace_word(self):
+        self.text_box.delete("sel.first", "sel.last")
+        self.text_box.insert("sel.first", self.replacement_word)
+        self.word_complexity_check()
+
+    def replace_synonym(self):
+        self.text_box.delete("sel.first", "sel.last")
+        self.text_box.insert("sel.first", self.synonyms[1])
+        self.leaflet_master.ignore_uncommon_words.append(self.synonyms[1])
 
     def check_spelling(self, event):
         self.text = self.text_box.get("1.0", tk.END)
@@ -462,6 +478,7 @@ class PageRow:
                         self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
                         self.misspelled_tag.remove(position)
             self.word_complexity_check()
+
 
 def new_file():
     os.execl(sys.executable, sys.executable, *sys.argv)
