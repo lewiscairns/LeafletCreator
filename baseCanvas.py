@@ -111,7 +111,6 @@ class LeafletCreator(tk.Tk):
             for row in page.row1, page.row2, page.row3, page.row4:
                 label, text = row.get_row()
                 all_rows[page_counter].append([label, self.retrieve_input(text)])
-                print(all_rows)
             page_counter = page_counter + 1
         docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size)
         tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
@@ -142,7 +141,7 @@ class LeafletCreator(tk.Tk):
                     label, text = row.get_row()
                     page_text.append([label, self.retrieve_input(text)])
                 pages_text.append(page_text)
-            data = [self.user_title, pages_text]
+            data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level, self.ignore_uncommon_words, pages_text]
             lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
 
     def load(self):
@@ -153,9 +152,14 @@ class LeafletCreator(tk.Tk):
             with open(filename, "rb") as file:
                 data = lc.load(file)
                 self.user_title = data[0]
+                self.font_size = data[1]
+                self.font_style = data[2]
+                self.word_count = data[3]
+                self.reading_level = data[4]
+                self.ignore_uncommon_words = data[5]
                 self.title = (self.user_title + " - Leaflet Creator")
                 self.pages = []
-                for page in data[1]:
+                for page in data[6]:
                     self.pages.append(LeafletPage(self))
                     for row in page:
                         self.pages[-1].add_row(row[0], row[1])
@@ -172,6 +176,9 @@ class LeafletCreator(tk.Tk):
 
     def change_font(self):
         ChangeFont(self)
+
+    def change_font_size(self):
+        ChangeFontSize(self)
 
     @staticmethod
     def retrieve_input(text_box):
