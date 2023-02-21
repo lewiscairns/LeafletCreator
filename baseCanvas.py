@@ -13,6 +13,7 @@ from PIL import Image, ImageTk
 import docxFiles
 import pickle as lc
 from nltk.corpus import wordnet
+import subprocess
 
 pageCounter = 1
 
