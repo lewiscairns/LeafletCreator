@@ -1,9 +1,14 @@
 from docx import Document
 from docx.shared import Inches
+from docx.shared import Pt
 
 
-def create_document(title, all_rows, folder_selected):
+def create_document(title, all_rows, folder_selected, font_style, font_size):
     document = Document()
+    style = document.styles['Normal']
+    font = style.font
+    font.name = font_style
+    font.size = Pt(font_size)
     document.add_heading(title, 0)
     for page in all_rows:
         table = document.add_table(rows=0, cols=2)
