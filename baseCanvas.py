@@ -157,7 +157,8 @@ class LeafletCreator(tk.Tk):
                 self.word_count = data[3]
                 self.reading_level = data[4]
                 self.ignore_uncommon_words = data[5]
-                self.title = (self.user_title + " - Leaflet Creator")
+                new_title = (self.user_title + " - Leaflet Creator")
+                LeafletCreator.title(self, new_title)
                 self.pages = []
                 for page in data[6]:
                     self.pages.append(LeafletPage(self))
@@ -235,6 +236,7 @@ class ChangeFontSize:
     def decrease_font_size(self):
         self.master.font_size = self.master.font_size - 1
         self.top_font_size.set(self.master.font_size)
+
 
 class ChangeReading:
     def __init__(self, master):
