@@ -60,10 +60,17 @@ class LeafletCreator(tk.Tk):
         self.recommendation_menu.add_command(label="Word Count", command=self.change_word_count)
         self.menu_bar.add_cascade(label="Recommendations", menu=self.recommendation_menu)
 
+        self.font_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.font_menu.add_command(label="Font Style", command=self.change_font)
+        self.font_menu.add_command(label="Font Size", command=self.change_font_size)
+        self.menu_bar.add_cascade(label="Font", menu=self.font_menu)
+
         self.reading_level = 90
         self.word_count = 10
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
         self.ignore_uncommon_words = [""]
+        self.font_style = "Times New Roman"
+        self.font_size = 12
 
         self.lift()
 
@@ -106,7 +113,7 @@ class LeafletCreator(tk.Tk):
                 all_rows[page_counter].append([label, self.retrieve_input(text)])
                 print(all_rows)
             page_counter = page_counter + 1
-        docxFiles.create_document(self.user_title, all_rows, folder_selected)
+        docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size)
         tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
 
     def move_page(self):
@@ -163,11 +170,64 @@ class LeafletCreator(tk.Tk):
     def change_word_count(self):
         ChangeWordCount(self)
 
+    def change_font(self):
+        ChangeFont(self)
+
     @staticmethod
     def retrieve_input(text_box):
         input_value = text_box.get("1.0", "end-1c")
         return input_value
 
+
+class ChangeFont:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Font Style")
+        self.arial_button = tk.Button(self.top, text="Arial", command=self.arial)
+        self.times_button = tk.Button(self.top, text="Times New Roman", command=self.times)
+        self.arial_button.pack()
+        self.times_button.pack()
+
+    def arial(self):
+        self.master.font_style = "Arial"
+        self.top.destroy()
+        tk.messagebox.showinfo("Success", "Your document will now generate in Arial as the font style")
+
+    def times(self):
+        self.master.font_style = "Times New Roman"
+        self.top.destroy()
+        tk.messagebox.showinfo("Success", "Your document will now generate in Times New Roman as the font style")
+
+
+class ChangeFontSize:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Font Size")
+        self.top_label = tk.Label(self.top, text="Recommended Font Size is 16")
+        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_font_size)
+        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_font_size)
+        self.top_font_size = tk.IntVar()
+        self.top_font_size.set(self.master.font_size)
+        self.top_entry = tk.Entry(self.top, textvariable=self.top_font_size)
+        self.top_entry.configure(state="readonly")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_button_up.grid(row=1, column=0)
+        self.top_entry.grid(row=1, column=1)
+        self.top_button_down.grid(row=1, column=2)
+        self.top_button.grid(row=2, column=0, columnspan=2)
+
+    def increase_font_size(self):
+        self.master.font_size = self.master.font_size + 1
+        self.top_font_size.set(self.master.font_size)
+
+    def decrease_font_size(self):
+        self.master.font_size = self.master.font_size - 1
+        self.top_font_size.set(self.master.font_size)
 
 class ChangeReading:
     def __init__(self, master):
