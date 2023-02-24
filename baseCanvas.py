@@ -445,7 +445,7 @@ class PageRow:
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
-        self.filename = fd.askopenfilename(title='Open Images', initialdir='/', filetypes=filetypes)
+        self.filename = fd.askopenfilename(title='Open Images', initialdir='C:/Program Files/LeafletCreator/Images', filetypes=filetypes)
         self.image = Image.open(self.filename)
         self.resize_image = self.image.resize((150, 150))
         self.photo = ImageTk.PhotoImage(self.resize_image)
