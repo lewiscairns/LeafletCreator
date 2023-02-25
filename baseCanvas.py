@@ -300,13 +300,13 @@ class ChangeWordCount:
 class LeafletPage(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.prev_button = tk.Button(self, text="Previous", command=master.prev_page)
+        self.prev_button = tk.Button(self, text="Previous", command=master.prev_page, cursor="hand2")
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
         self.page_title = tk.Label(self, text="Page " + str(pageCounter))
         self.page_title.grid(row=1, column=1, padx=30, pady=10)
 
-        self.next_button = tk.Button(self, text="Next", command=master.next_page)
+        self.next_button = tk.Button(self, text="Next", command=master.next_page, cursor="hand2")
         self.next_button.grid(row=1, column=2, padx=30, pady=10)
 
         self.row1 = PageRow(self, 3, master)
@@ -348,7 +348,7 @@ class PageRow:
         self.image = Image.open(self.filename)
         self.resize_image = self.image.resize((150, 150))
         self.photo = ImageTk.PhotoImage(self.resize_image)
-        self.label_image = tk.Label(master, image=self.photo)
+        self.label_image = tk.Label(master, image=self.photo, cursor="hand2")
         self.label_image.image = self.photo
         self.label_image.bind("<Button-1>", self.image_click)
 
@@ -363,7 +363,7 @@ class PageRow:
         self.complexity_image = Image.open(self.complexity_filename)
         self.complexity_resize_image = self.complexity_image.resize((100, 100))
         self.complexity_photo = ImageTk.PhotoImage(self.complexity_resize_image)
-        self.complexity_icon = tk.Label(master, image=self.complexity_photo)
+        self.complexity_icon = tk.Label(master, image=self.complexity_photo, cursor="hand2")
         self.complexity_icon.image = self.complexity_photo
 
         self.label_image.grid(row=row_num, column=0, padx=60, pady=10)
