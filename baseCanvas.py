@@ -321,7 +321,7 @@ class PageRow:
         self.polarity = TextBlob(self.text_box.get("1.0", "end-1c")).sentiment.polarity
         if self.polarity < self.leaflet_master.polarity:
             self.sentence_issues[2] = True
-            self.complexity_recommendations[2] = "Current polarity is: " + str(
+            self.complexity_recommendations[2] = "Current polarity (how positive your sentence is) is: " + str(
                 round(self.polarity, 2)) + "\nTry keep it above " + str(self.leaflet_master.polarity) + ".\n"
         elif self.polarity > self.leaflet_master.polarity:
             self.sentence_issues[2] = False
@@ -566,6 +566,37 @@ class ChangeWordCount:
     def decrease_word_count(self):
         self.master.word_count = self.master.word_count - 1
         self.top_word_count.set(self.master.word_count)
+
+
+class ChangePolarity:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Sentiment Polarity")
+        self.top_label = tk.Label(self.top, text="Recommended Sentiment Polarity is 0")
+        self.top_label2 = tk.Label(self.top, text="Polarity is a number between -1 and 1")
+        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_polarity_limit)
+        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_polarity_limit)
+        self.top_polarity = tk.IntVar()
+        self.top_polarity.set(self.master.polarity)
+        self.top_entry = tk.Entry(self.top, textvariable=self.top_polarity)
+        self.top_entry.configure(state="readonly")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label2.grid(row=1, column=0, columnspan=2)
+        self.top_button_up.grid(row=2, column=0)
+        self.top_entry.grid(row=2, column=1)
+        self.top_button_down.grid(row=2, column=2)
+        self.top_button.grid(row=3, column=0, columnspan=2)
+
+    def increase_polarity_limit(self):
+        self.master.polarity = self.master.polarity + 0.1
+        self.top_polarity.set(self.master.polarity)
+
+    def decrease_polarity_limit(self):
+        self.master.polarity = self.master.polarity - 0.1
+        self.top_polarity.set(self.master.polarity)
 
 
 def new_file():
