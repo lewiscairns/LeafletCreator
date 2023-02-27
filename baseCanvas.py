@@ -9,6 +9,7 @@ import numpy as np
 import textstat
 import re
 from textblob import Word
+from textblob import TextBlob
 from PIL import Image, ImageTk
 import docxFiles
 import pickle as lc
@@ -59,6 +60,7 @@ class LeafletCreator(tk.Tk):
         self.recommendation_menu = tk.Menu(self.menu_bar, tearoff=False)
         self.recommendation_menu.add_command(label="Reading Level", command=self.change_reading_level)
         self.recommendation_menu.add_command(label="Word Count", command=self.change_word_count)
+        self.recommendation_menu.add_command(label="Polarity", command=self.change_polarity)
         self.menu_bar.add_cascade(label="Recommendations", menu=self.recommendation_menu)
 
         self.font_menu = tk.Menu(self.menu_bar, tearoff=False)
@@ -68,6 +70,7 @@ class LeafletCreator(tk.Tk):
 
         self.reading_level = 90
         self.word_count = 10
+        self.polarity = 0
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
         self.ignore_uncommon_words = [""]
         self.font_style = "Times New Roman"
@@ -142,7 +145,7 @@ class LeafletCreator(tk.Tk):
                     label, text = row.get_row()
                     page_text.append([label, self.retrieve_input(text)])
                 pages_text.append(page_text)
-            data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level, self.ignore_uncommon_words, pages_text]
+            data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level, self.ignore_uncommon_words, self.polarity, pages_text]
             lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
 
     def load(self):
@@ -158,10 +161,11 @@ class LeafletCreator(tk.Tk):
                 self.word_count = data[3]
                 self.reading_level = data[4]
                 self.ignore_uncommon_words = data[5]
+                self.polarity = data[6]
                 new_title = (self.user_title + " - Leaflet Creator")
                 LeafletCreator.title(self, new_title)
                 self.pages = []
-                for page in data[6]:
+                for page in data[7]:
                     self.pages.append(LeafletPage(self))
                     for row in page:
                         self.pages[-1].add_row(row[0], row[1])
@@ -182,119 +186,13 @@ class LeafletCreator(tk.Tk):
     def change_font_size(self):
         ChangeFontSize(self)
 
+    def change_polarity(self):
+        ChangePolarity(self)
+
     @staticmethod
     def retrieve_input(text_box):
         input_value = text_box.get("1.0", "end-1c")
         return input_value
-
-
-class ChangeFont:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Font Style")
-        self.arial_button = tk.Button(self.top, text="Arial", command=self.arial)
-        self.times_button = tk.Button(self.top, text="Times New Roman", command=self.times)
-        self.arial_button.pack()
-        self.times_button.pack()
-
-    def arial(self):
-        self.master.font_style = "Arial"
-        self.top.destroy()
-        tk.messagebox.showinfo("Success", "Your document will now generate in Arial as the font style")
-
-    def times(self):
-        self.master.font_style = "Times New Roman"
-        self.top.destroy()
-        tk.messagebox.showinfo("Success", "Your document will now generate in Times New Roman as the font style")
-
-
-class ChangeFontSize:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Font Size")
-        self.top_label = tk.Label(self.top, text="Recommended Font Size is 16")
-        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_font_size)
-        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_font_size)
-        self.top_font_size = tk.IntVar()
-        self.top_font_size.set(self.master.font_size)
-        self.top_entry = tk.Entry(self.top, textvariable=self.top_font_size)
-        self.top_entry.configure(state="readonly")
-        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_button_up.grid(row=1, column=0)
-        self.top_entry.grid(row=1, column=1)
-        self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
-
-    def increase_font_size(self):
-        self.master.font_size = self.master.font_size + 1
-        self.top_font_size.set(self.master.font_size)
-
-    def decrease_font_size(self):
-        self.master.font_size = self.master.font_size - 1
-        self.top_font_size.set(self.master.font_size)
-
-
-class ChangeReading:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Reading Level")
-        self.top_label = tk.Label(self.top, text="Recommended Reading Level is 90")
-        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_reading_level)
-        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_reading_level)
-        self.top_reading_level = tk.IntVar()
-        self.top_reading_level.set(self.master.reading_level)
-        self.top_entry = tk.Entry(self.top, textvariable=self.top_reading_level)
-        self.top_entry.configure(state="readonly")
-        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_button_up.grid(row=1, column=0)
-        self.top_entry.grid(row=1, column=1)
-        self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
-
-    def increase_reading_level(self):
-        self.master.reading_level = self.master.reading_level + 1
-        self.top_reading_level.set(self.master.reading_level)
-
-    def decrease_reading_level(self):
-        self.master.reading_level = self.master.reading_level - 1
-        self.top_reading_level.set(self.master.reading_level)
-
-
-class ChangeWordCount:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Word Count")
-        self.top_label = tk.Label(self.top, text="Recommended Word Count is 10")
-        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_word_count)
-        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_word_count)
-        self.top_word_count = tk.IntVar()
-        self.top_word_count.set(self.master.word_count)
-        self.top_entry = tk.Entry(self.top, textvariable=self.top_word_count)
-        self.top_entry.configure(state="readonly")
-        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_button_up.grid(row=1, column=0)
-        self.top_entry.grid(row=1, column=1)
-        self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
-
-    def increase_word_count(self):
-        self.master.word_count = self.master.word_count + 1
-        self.top_word_count.set(self.master.word_count)
-
-    def decrease_word_count(self):
-        self.master.word_count = self.master.word_count - 1
-        self.top_word_count.set(self.master.word_count)
 
 
 class LeafletPage(tk.Frame):
@@ -375,10 +273,11 @@ class PageRow:
         self.synonyms = []
 
         self.sentence_complexity = "Good"
-        self.sentence_issues = np.array([False, False])
+        self.sentence_issues = np.array([False, False, False])
         self.reading_level = 0
         self.word_count = 0
-        self.complexity_recommendations = ["", ""]
+        self.polarity = 0
+        self.complexity_recommendations = ["", "", ""]
         self.complexity_icon.bind("<Button-1>", self.show_complexity_recommendations)
         self.misspelled_tag = []
         self.text = ""
@@ -418,6 +317,16 @@ class PageRow:
         elif self.word_count < self.leaflet_master.word_count:
             self.sentence_issues[1] = False
             self.complexity_recommendations[1] = ""
+
+        self.polarity = TextBlob(self.text_box.get("1.0", "end-1c")).sentiment.polarity
+        if self.polarity < self.leaflet_master.polarity:
+            self.sentence_issues[2] = True
+            self.complexity_recommendations[2] = "Current polarity is: " + str(
+                round(self.polarity, 2)) + "\nTry keep it above " + str(self.leaflet_master.polarity) + ".\n"
+        elif self.polarity > self.leaflet_master.polarity:
+            self.sentence_issues[2] = False
+            self.complexity_recommendations[2] = ""
+
         self.update_complexity()
 
     def update_complexity(self):
@@ -548,6 +457,115 @@ class PageRow:
                         self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
                         self.misspelled_tag.remove(position)
             self.word_complexity_check()
+
+
+class ChangeFont:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Font Style")
+        self.arial_button = tk.Button(self.top, text="Arial", command=self.arial)
+        self.times_button = tk.Button(self.top, text="Times New Roman", command=self.times)
+        self.arial_button.pack()
+        self.times_button.pack()
+
+    def arial(self):
+        self.master.font_style = "Arial"
+        self.top.destroy()
+        tk.messagebox.showinfo("Success", "Your document will now generate in Arial as the font style")
+
+    def times(self):
+        self.master.font_style = "Times New Roman"
+        self.top.destroy()
+        tk.messagebox.showinfo("Success", "Your document will now generate in Times New Roman as the font style")
+
+
+class ChangeFontSize:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Font Size")
+        self.top_label = tk.Label(self.top, text="Recommended Font Size is 16")
+        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_font_size)
+        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_font_size)
+        self.top_font_size = tk.IntVar()
+        self.top_font_size.set(self.master.font_size)
+        self.top_entry = tk.Entry(self.top, textvariable=self.top_font_size)
+        self.top_entry.configure(state="readonly")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_button_up.grid(row=1, column=0)
+        self.top_entry.grid(row=1, column=1)
+        self.top_button_down.grid(row=1, column=2)
+        self.top_button.grid(row=2, column=0, columnspan=2)
+
+    def increase_font_size(self):
+        self.master.font_size = self.master.font_size + 1
+        self.top_font_size.set(self.master.font_size)
+
+    def decrease_font_size(self):
+        self.master.font_size = self.master.font_size - 1
+        self.top_font_size.set(self.master.font_size)
+
+
+class ChangeReading:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Reading Level")
+        self.top_label = tk.Label(self.top, text="Recommended Reading Level is 90")
+        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_reading_level)
+        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_reading_level)
+        self.top_reading_level = tk.IntVar()
+        self.top_reading_level.set(self.master.reading_level)
+        self.top_entry = tk.Entry(self.top, textvariable=self.top_reading_level)
+        self.top_entry.configure(state="readonly")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_button_up.grid(row=1, column=0)
+        self.top_entry.grid(row=1, column=1)
+        self.top_button_down.grid(row=1, column=2)
+        self.top_button.grid(row=2, column=0, columnspan=2)
+
+    def increase_reading_level(self):
+        self.master.reading_level = self.master.reading_level + 1
+        self.top_reading_level.set(self.master.reading_level)
+
+    def decrease_reading_level(self):
+        self.master.reading_level = self.master.reading_level - 1
+        self.top_reading_level.set(self.master.reading_level)
+
+
+class ChangeWordCount:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Word Count")
+        self.top_label = tk.Label(self.top, text="Recommended Word Count is 10")
+        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_word_count)
+        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_word_count)
+        self.top_word_count = tk.IntVar()
+        self.top_word_count.set(self.master.word_count)
+        self.top_entry = tk.Entry(self.top, textvariable=self.top_word_count)
+        self.top_entry.configure(state="readonly")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_button_up.grid(row=1, column=0)
+        self.top_entry.grid(row=1, column=1)
+        self.top_button_down.grid(row=1, column=2)
+        self.top_button.grid(row=2, column=0, columnspan=2)
+
+    def increase_word_count(self):
+        self.master.word_count = self.master.word_count + 1
+        self.top_word_count.set(self.master.word_count)
+
+    def decrease_word_count(self):
+        self.master.word_count = self.master.word_count - 1
+        self.top_word_count.set(self.master.word_count)
 
 
 def new_file():
