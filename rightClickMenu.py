@@ -77,7 +77,6 @@ def get_word_replacement(self, word):
 
 
 def get_word_synonym(self, word):
-    print("Word is: " + word)
     if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words or word == "\n" or word.isspace():
         return False
     else:
