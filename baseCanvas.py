@@ -27,7 +27,7 @@ class LeafletCreator(tk.Tk):
 
         self.pages = []
         self.current_page = 0
-        self.pageCounter = 1
+        self.page_counter = 0
 
         self.create_page()
 
@@ -150,7 +150,7 @@ class LeafletPage(tk.Frame):
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page, cursor="hand2")
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
-        self.page_title = tk.Label(self, text="Page " + str(master.pageCounter))
+        self.page_title = tk.Label(self, text="Page " + str(master.page_counter))
         self.page_title.grid(row=1, column=1, padx=30, pady=10)
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page, cursor="hand2")

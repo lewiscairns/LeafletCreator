@@ -18,12 +18,10 @@ def title_file(self, master):
 
 
 def create_page(self, master_page):
+    self.page_counter = self.page_counter + 1
     self.pages.append(master_page(self))
-    self.pageCounter = self.pageCounter + 1
-    if len(self.pages) > 1:
-        self.pages[self.current_page].grid_forget()
-        self.current_page = len(self.pages) - 1
-        self.show_page()
+    self.pages[self.current_page].grid_forget()
+    self.current_page = len(self.pages) - 1
     self.show_page()
 
 

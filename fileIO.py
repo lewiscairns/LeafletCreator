@@ -57,10 +57,12 @@ def load(self, master, master_page):
             new_title = (self.user_title + " - Leaflet Creator")
             master.title(self, new_title)
             self.pages = []
+            self.page_counter = 0
             for page in data[10]:
+                self.page_counter += 1
                 self.pages.append(master_page(self))
                 for row in page:
-                    self.pages[-1].add_row(row[0], row[1])
+                    self.pages[self.page_counter-1].add_row(row[0], row[1])
     except Exception as e:
         print("Error: " + str(e))
     self.current_page = 0
