@@ -151,7 +151,8 @@ class LeafletCreator(tk.Tk):
                     label, text = row.get_row()
                     page_text.append([label, self.retrieve_input(text)])
                 pages_text.append(page_text)
-            data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level, self.ignore_uncommon_words, self.polarity, pages_text]
+            data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level, self.ignore_uncommon_words, self.polarity, self.watermark_text,
+                    self.watermark_image, pages_text]
             lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
 
     def load(self):
@@ -168,10 +169,12 @@ class LeafletCreator(tk.Tk):
                 self.reading_level = data[4]
                 self.ignore_uncommon_words = data[5]
                 self.polarity = data[6]
+                self.watermark_text = data[7]
+                self.watermark_image = data[8]
                 new_title = (self.user_title + " - Leaflet Creator")
                 LeafletCreator.title(self, new_title)
                 self.pages = []
-                for page in data[7]:
+                for page in data[9]:
                     self.pages.append(LeafletPage(self))
                     for row in page:
                         self.pages[-1].add_row(row[0], row[1])
