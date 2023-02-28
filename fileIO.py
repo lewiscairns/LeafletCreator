@@ -1,5 +1,3 @@
-import menuBar
-
 import pickle as lc
 import tkinter as tk
 from tkinter import filedialog as fd

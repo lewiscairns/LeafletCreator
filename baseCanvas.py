@@ -11,9 +11,7 @@ from tkinter import filedialog as fd
 
 import numpy as np
 import re
-from textblob import Word
 from PIL import Image, ImageTk
-
 
 
 class LeafletCreator(tk.Tk):
@@ -31,7 +29,7 @@ class LeafletCreator(tk.Tk):
 
         self.user_title = "Untitled"
 
-        self.saved_folder = "C:\Leaflets"
+        self.saved_folder = "C:/Leaflets"
 
         self.menu_bar = tk.Menu(self)
         self.config(menu=self.menu_bar)
@@ -183,6 +181,7 @@ class LeafletPage(tk.Frame):
             print("Error: No more rows available")
 
 
+# noinspection PyUnusedLocal
 class PageRow:
     def __init__(self, master, row_num, leaflet_master):
         self.leaflet_master = leaflet_master
@@ -235,7 +234,8 @@ class PageRow:
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
-        self.filename = fd.askopenfilename(title='Open Images', initialdir='C:/Program Files/LeafletCreator/Images', filetypes=filetypes)
+        self.filename = fd.askopenfilename(title='Open Images', initialdir='C:/Program Files/LeafletCreator/Images',
+                                           filetypes=filetypes)
         self.image = Image.open(self.filename)
         self.resize_image = self.image.resize((150, 150))
         self.photo = ImageTk.PhotoImage(self.resize_image)
