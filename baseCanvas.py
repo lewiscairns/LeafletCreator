@@ -1,22 +1,19 @@
 import os
 import sys
+
+import fileIO
+import menuBar
+import sentenceAnalysis
+import rightClickMenu
+
 import tkinter as tk
 from tkinter import filedialog as fd
-from tkinter.messagebox import showinfo
-from tkinter.simpledialog import askstring
 
 import numpy as np
-import textstat
 import re
 from textblob import Word
-from textblob import TextBlob
 from PIL import Image, ImageTk
-import docxFiles
-import pickle as lc
-from nltk.corpus import wordnet
-import subprocess
 
-pageCounter = 1
 
 
 class LeafletCreator(tk.Tk):
@@ -28,6 +25,7 @@ class LeafletCreator(tk.Tk):
 
         self.pages = []
         self.current_page = 0
+        self.page_counter = 0
 
         self.create_page()
 
@@ -39,7 +37,7 @@ class LeafletCreator(tk.Tk):
         self.config(menu=self.menu_bar)
 
         self.file_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.file_menu.add_command(label="New", command=new_file)
+        self.file_menu.add_command(label="New", command=self.new_file)
         self.file_menu.add_command(label="Open", command=self.load)
         self.file_menu.add_command(label="Save", command=self.save)
         self.file_menu.add_command(label="Save As", command=self.save_as)
@@ -84,122 +82,59 @@ class LeafletCreator(tk.Tk):
 
         self.lift()
 
-    def title_file(self):
-        self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
-        new_title = self.user_title + " - Leaflet Creator"
-        LeafletCreator.title(self, new_title)
-
-    def create_page(self):
-        global pageCounter
-        self.pages.append(LeafletPage(self))
-        pageCounter = pageCounter + 1
-        if len(self.pages) > 1:
-            self.pages[self.current_page].grid_forget()
-            self.current_page = len(self.pages) - 1
-            self.show_page()
-        self.show_page()
-
     def show_page(self):
         self.pages[self.current_page].grid()
 
+    def new_file(self):
+        menuBar.new_file(self)
+
+    def title_file(self):
+        menuBar.title_file(self, LeafletCreator)
+
+    def create_page(self):
+        menuBar.create_page(self, LeafletPage)
+
     def next_page(self):
-        self.pages[self.current_page].grid_forget()
-        self.current_page = (self.current_page + 1) % len(self.pages)
-        self.show_page()
+        menuBar.next_page(self)
 
     def prev_page(self):
-        self.pages[self.current_page].grid_forget()
-        self.current_page = (self.current_page - 1) % len(self.pages)
-        self.show_page()
-
-    def generate(self):
-        folder_selected = fd.askdirectory(title="Select Folder To Generate File")
-        all_rows = []
-        page_counter = 0
-        for page in self.pages:
-            all_rows.append([page_counter])
-            for row in page.row1, page.row2, page.row3, page.row4:
-                label, text = row.get_row()
-                all_rows[page_counter].append([label, self.retrieve_input(text)])
-            page_counter = page_counter + 1
-        docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size)
-        tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
+        menuBar.prev_page(self)
 
     def move_page(self):
-        print("Move Page")
+        menuBar.move_page(self)
+
+    def generate(self):
+        menuBar.generate(self)
 
     def save_as(self):
-        try:
-            self.saved_folder = fd.askdirectory(title="Select Folder To Generate File")
-            self.saving()
-            tk.messagebox.showinfo("Success", "Your document has been saved")
-        except Exception as e:
-            print("Error: " + str(e))
+        fileIO.save_as(self)
 
     def save(self):
-        try:
-            self.saving()
-        except Exception as e:
-            print("Error: " + str(e))
+        fileIO.save(self)
 
     def saving(self):
-        with open(self.saved_folder + "/" + self.user_title + ".lc", "wb") as file:
-            pages_text = []
-            for page in self.pages:
-                page_text = []
-                for row in page.row1, page.row2, page.row3, page.row4:
-                    label, text = row.get_row()
-                    page_text.append([label, self.retrieve_input(text)])
-                pages_text.append(page_text)
-            data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level, self.ignore_uncommon_words, self.polarity, self.watermark_text,
-                    self.watermark_image, pages_text]
-            lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
+        fileIO.saving(self)
 
     def load(self):
-        self.pages[self.current_page].grid_forget()
-        filetypes = (('leaflet.lc', '*.lc'), ('All files', '*.*'))
-        filename = fd.askopenfilename(title='Open Leaflet', initialdir='/', filetypes=filetypes)
-        try:
-            with open(filename, "rb") as file:
-                data = lc.load(file)
-                self.user_title = data[0]
-                self.font_size = data[1]
-                self.font_style = data[2]
-                self.word_count = data[3]
-                self.reading_level = data[4]
-                self.ignore_uncommon_words = data[5]
-                self.polarity = data[6]
-                self.watermark_text = data[7]
-                self.watermark_image = data[8]
-                new_title = (self.user_title + " - Leaflet Creator")
-                LeafletCreator.title(self, new_title)
-                self.pages = []
-                for page in data[9]:
-                    self.pages.append(LeafletPage(self))
-                    for row in page:
-                        self.pages[-1].add_row(row[0], row[1])
-        except Exception as e:
-            print("Error: " + str(e))
-        self.current_page = 0
-        self.show_page()
+        fileIO.load(self, LeafletCreator, LeafletPage)
 
     def change_reading_level(self):
-        ChangeReading(self)
+        menuBar.ChangeReading(self)
 
     def change_word_count(self):
-        ChangeWordCount(self)
+        menuBar.ChangeWordCount(self)
 
     def change_font(self):
-        ChangeFont(self)
+        menuBar.ChangeFont(self)
 
     def change_font_size(self):
-        ChangeFontSize(self)
+        menuBar.ChangeFontSize(self)
 
     def change_polarity(self):
-        ChangePolarity(self)
+        menuBar.ChangePolarity(self)
 
     def edit_watermark(self):
-        Watermark(self)
+        menuBar.Watermark(self)
 
     @staticmethod
     def retrieve_input(text_box):
@@ -213,7 +148,7 @@ class LeafletPage(tk.Frame):
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page, cursor="hand2")
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
-        self.page_title = tk.Label(self, text="Page " + str(pageCounter))
+        self.page_title = tk.Label(self, text="Page " + str(master.page_counter))
         self.page_title.grid(row=1, column=1, padx=30, pady=10)
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page, cursor="hand2")
@@ -295,73 +230,8 @@ class PageRow:
         self.text = ""
         self.num_spaces = 0
 
-    def show_complexity_recommendations(self, event):
-        recommendation_text = ""
-        for recommendation in self.complexity_recommendations:
-            if recommendation != "":
-                recommendation_text += "\n" + recommendation
-        if recommendation_text == "":
-            recommendation_text = "No recommendations available"
-        top = tk.Toplevel(self.master)
-        top.geometry("300x150")
-        top.title("Recommendations")
-        top_label = tk.Label(top, text=recommendation_text)
-        top_button = tk.Button(top, text="Close", command=top.destroy)
-        top_label.pack()
-        top_button.pack()
-
-    def check_sentence(self, event):
-        self.reading_level = textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
-        if self.reading_level < self.leaflet_master.reading_level:
-            self.sentence_issues[0] = True
-            self.complexity_recommendations[0] = "Reading level is: " + str(
-                round(self.reading_level)) + "\nTry keep it below " + str(self.leaflet_master.reading_level) + ".\n"
-        elif self.reading_level > self.leaflet_master.reading_level:
-            self.sentence_issues[0] = False
-            self.complexity_recommendations[0] = ""
-
-        self.word_count = len(self.text_box.get("1.0", "end-1c").split())
-        if self.word_count > self.leaflet_master.word_count:
-            self.sentence_issues[1] = True
-            self.complexity_recommendations[1] = "Current word count is: " + str(
-                self.word_count) + "\nTry keep it below " + str(self.leaflet_master.word_count) + " words.\n"
-        elif self.word_count < self.leaflet_master.word_count:
-            self.sentence_issues[1] = False
-            self.complexity_recommendations[1] = ""
-
-        self.polarity = TextBlob(self.text_box.get("1.0", "end-1c")).sentiment.polarity
-        if self.polarity < self.leaflet_master.polarity:
-            self.sentence_issues[2] = True
-            self.complexity_recommendations[2] = "Current polarity (how positive your sentence is) is: " + str(
-                round(self.polarity, 2)) + "\nTry keep it above " + str(self.leaflet_master.polarity) + ".\n"
-        elif self.polarity > self.leaflet_master.polarity:
-            self.sentence_issues[2] = False
-            self.complexity_recommendations[2] = ""
-
-        self.update_complexity()
-
-    def update_complexity(self):
-        if np.count_nonzero(self.sentence_issues) > 1:
-            self.sentence_complexity = "Bad"
-        elif np.count_nonzero(self.sentence_issues) > 0:
-            self.sentence_complexity = "Average"
-        else:
-            self.sentence_complexity = "Good"
-        self.update_complexity_image()
-
-    def update_complexity_image(self):
-        if self.sentence_complexity == "Good":
-            self.complexity_filename = "WikiGreenCircle.png"
-        elif self.sentence_complexity == "Average":
-            self.complexity_filename = "WikiYellowCircle.png"
-        else:
-            self.complexity_filename = "WikiRedCircle.png"
-
-        self.complexity_image = Image.open(self.complexity_filename)
-        self.complexity_resize_image = self.complexity_image.resize((100, 100))
-        self.complexity_photo = ImageTk.PhotoImage(self.complexity_resize_image)
-        self.complexity_icon.configure(image=self.complexity_photo)
-        self.complexity_icon.image = self.complexity_photo
+    def get_row(self):
+        return self.filename, self.text_box
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
@@ -372,282 +242,29 @@ class PageRow:
         self.label_image.configure(image=self.photo)
         self.label_image.image = self.photo
 
-    def get_row(self):
-        return self.filename, self.text_box
-
-    def word_complexity_check(self):
-        for word in self.text.split(' '):
-            word_positions = [i for i in range(len(self.text)) if self.text.startswith(word, i)]
-            word = self.regex.sub('', word)
-            for position in word_positions:
-                if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words:
-                    self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
-                elif position in self.misspelled_tag:
-                    self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
-                else:
-                    self.text_box.tag_add("uncommon", f'1.{position}', f'1.{position + len(word)}')
-
     def word_right_click(self, event):
-        word = self.text_box.get("@%d,%d wordstart" % (event.x, event.y), "@%d,%d wordend" % (event.x, event.y))
-        self.text_box.mark_set("insert", "@%d,%d" % (event.x, event.y))
-        self.text_box.mark_set("sel.first", "insert wordstart")
-        self.text_box.mark_set("sel.last", "insert wordend")
-        word_menu = tk.Menu(self.master, tearoff=0)
-        word_menu.add_command(label="Copy", command=self.copy_word)
-        word_menu.add_command(label="Paste", command=self.paste_word)
-        is_wrong = self.get_word_replacement(word)
-        is_uncommon = self.get_word_synonym(word)
-        if is_wrong:
-            word_menu.add_separator()
-            word_menu.add_command(label=self.replacement_word, command=self.replace_word)
-        elif is_uncommon:
-            word_menu.add_separator()
-            word_menu.add_command(label=self.synonyms[1], command=self.replace_synonym)
-            word_menu.add_separator()
-            word_menu.add_command(label="ignore", command=self.leaflet_master.ignore_uncommon_words.append(word))
-        word_menu.tk_popup(event.x_root, event.y_root, 0)
+        rightClickMenu.word_right_click(self, event)
 
-    def get_word_replacement(self, word):
-        text = Word(word)
-        suggestion = text.spellcheck()
-        suggestion_text = suggestion[0]
-        suggestion_text = str(suggestion_text).split(" ", 1)[0]
-        suggestion_text = self.regex.sub('', suggestion_text)
-        if suggestion_text == "n":
-            return False
-        elif suggestion_text != word:
-            self.replacement_word = suggestion_text
-            return True
-        else:
-            return False
+    def check_sentence(self, event):
+        sentenceAnalysis.check_sentence(self)
 
-    def get_word_synonym(self, word):
-        if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words:
-            return False
-        else:
-            for syn in wordnet.synsets(word):
-                for lemma in syn.lemmas():
-                    self.synonyms.append(lemma.name())
-            return True
-
-    def copy_word(self):
-        self.text_box.clipboard_clear()
-        self.text_box.clipboard_append(self.text_box.selection_get())
-
-    def paste_word(self):
-        self.text_box.insert(tk.INSERT, self.text_box.clipboard_get())
+    def show_complexity_recommendations(self, event):
+        sentenceAnalysis.show_complexity_recommendations(self)
 
     def replace_word(self):
-        self.text_box.delete("sel.first", "sel.last")
-        self.text_box.insert("sel.first", self.replacement_word)
-        self.word_complexity_check()
+        rightClickMenu.replace_word(self)
 
     def replace_synonym(self):
-        self.text_box.delete("sel.first", "sel.last")
-        self.text_box.insert("sel.first", self.synonyms[1])
-        self.leaflet_master.ignore_uncommon_words.append(self.synonyms[1])
+        rightClickMenu.replace_synonym(self)
+
+    def copy_word(self):
+        rightClickMenu.copy_word(self)
+
+    def paste_word(self):
+        rightClickMenu.paste_word(self)
 
     def check_spelling(self, event):
-        self.text = self.text_box.get("1.0", tk.END)
-        current_spaces = self.text.count(' ')
-        self.misspelled_tag = []
-        if current_spaces != self.num_spaces:
-            self.num_spaces = current_spaces
-            for word in self.text.split(' '):
-                word_positions = [i for i in range(len(self.text)) if self.text.startswith(word, i)]
-                suggestion = Word.spellcheck(Word(word))
-                suggestion_text = suggestion[0]
-                suggestion_text = str(suggestion_text).split(" ", 1)[0]
-                suggestion_text = self.regex.sub('', suggestion_text)
-                word = self.regex.sub('', word)
-                for position in word_positions:
-                    self.misspelled_tag.append(position)
-                    if suggestion_text != word and suggestion_text != "n":
-                        self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
-                    else:
-                        self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
-                        self.misspelled_tag.remove(position)
-            self.word_complexity_check()
-
-
-class ChangeFont:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Font Style")
-        self.arial_button = tk.Button(self.top, text="Arial", command=self.arial)
-        self.times_button = tk.Button(self.top, text="Times New Roman", command=self.times)
-        self.arial_button.pack()
-        self.times_button.pack()
-
-    def arial(self):
-        self.master.font_style = "Arial"
-        self.top.destroy()
-        tk.messagebox.showinfo("Success", "Your document will now generate in Arial as the font style")
-
-    def times(self):
-        self.master.font_style = "Times New Roman"
-        self.top.destroy()
-        tk.messagebox.showinfo("Success", "Your document will now generate in Times New Roman as the font style")
-
-
-class ChangeFontSize:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Font Size")
-        self.top_label = tk.Label(self.top, text="Recommended Font Size is 16")
-        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_font_size)
-        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_font_size)
-        self.top_font_size = tk.IntVar()
-        self.top_font_size.set(self.master.font_size)
-        self.top_entry = tk.Entry(self.top, textvariable=self.top_font_size)
-        self.top_entry.configure(state="readonly")
-        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_button_up.grid(row=1, column=0)
-        self.top_entry.grid(row=1, column=1)
-        self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
-
-    def increase_font_size(self):
-        self.master.font_size = self.master.font_size + 1
-        self.top_font_size.set(self.master.font_size)
-
-    def decrease_font_size(self):
-        self.master.font_size = self.master.font_size - 1
-        self.top_font_size.set(self.master.font_size)
-
-
-class ChangeReading:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Reading Level")
-        self.top_label = tk.Label(self.top, text="Recommended Reading Level is 90")
-        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_reading_level)
-        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_reading_level)
-        self.top_reading_level = tk.IntVar()
-        self.top_reading_level.set(self.master.reading_level)
-        self.top_entry = tk.Entry(self.top, textvariable=self.top_reading_level)
-        self.top_entry.configure(state="readonly")
-        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_button_up.grid(row=1, column=0)
-        self.top_entry.grid(row=1, column=1)
-        self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
-
-    def increase_reading_level(self):
-        self.master.reading_level = self.master.reading_level + 1
-        self.top_reading_level.set(self.master.reading_level)
-
-    def decrease_reading_level(self):
-        self.master.reading_level = self.master.reading_level - 1
-        self.top_reading_level.set(self.master.reading_level)
-
-
-class ChangeWordCount:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Word Count")
-        self.top_label = tk.Label(self.top, text="Recommended Word Count is 10")
-        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_word_count)
-        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_word_count)
-        self.top_word_count = tk.IntVar()
-        self.top_word_count.set(self.master.word_count)
-        self.top_entry = tk.Entry(self.top, textvariable=self.top_word_count)
-        self.top_entry.configure(state="readonly")
-        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_button_up.grid(row=1, column=0)
-        self.top_entry.grid(row=1, column=1)
-        self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
-
-    def increase_word_count(self):
-        self.master.word_count = self.master.word_count + 1
-        self.top_word_count.set(self.master.word_count)
-
-    def decrease_word_count(self):
-        self.master.word_count = self.master.word_count - 1
-        self.top_word_count.set(self.master.word_count)
-
-
-class ChangePolarity:
-    def __init__(self, master):
-        self.master = master
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Sentiment Polarity")
-        self.top_label = tk.Label(self.top, text="Recommended Sentiment Polarity is 0")
-        self.top_label2 = tk.Label(self.top, text="Polarity is a number between -1 and 1")
-        self.top_button_up = tk.Button(self.top, text="+", command=self.increase_polarity_limit)
-        self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_polarity_limit)
-        self.top_polarity = tk.IntVar()
-        self.top_polarity.set(self.master.polarity)
-        self.top_entry = tk.Entry(self.top, textvariable=self.top_polarity)
-        self.top_entry.configure(state="readonly")
-        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_label2.grid(row=1, column=0, columnspan=2)
-        self.top_button_up.grid(row=2, column=0)
-        self.top_entry.grid(row=2, column=1)
-        self.top_button_down.grid(row=2, column=2)
-        self.top_button.grid(row=3, column=0, columnspan=2)
-
-    def increase_polarity_limit(self):
-        self.master.polarity = self.master.polarity + 0.1
-        self.top_polarity.set(self.master.polarity)
-
-    def decrease_polarity_limit(self):
-        self.master.polarity = self.master.polarity - 0.1
-        self.top_polarity.set(self.master.polarity)
-
-
-class Watermark:
-    def __init__(self, master):
-        self.master = master
-        self.watermark_image = self.master.watermark_image
-        self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
-        self.top.title("Watermark")
-        self.top_label = tk.Label(self.top, text="Please enter watermark text and image")
-        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_button_save = tk.Button(self.top, text="Save", command=self.save_watermark)
-        self.watermark_text = tk.StringVar()
-        self.watermark_text.set(self.master.watermark_text)
-        self.top_entry = tk.Entry(self.top, textvariable=self.watermark_text)
-        self.top_image = Image.open(self.watermark_image)
-        self.top_resize_image = self.top_image.resize((50, 50))
-        self.top_photo = ImageTk.PhotoImage(self.top_resize_image)
-        self.top_image_label = tk.Label(self.top, image=self.top_photo, cursor="hand2")
-        self.top_image_label.bind("<Button-1>", self.image_click)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_entry.grid(row=1, column=0, padx=5, pady=10)
-        self.top_image_label.grid(row=1, column=1, padx=10, pady=10)
-        self.top_button_save.grid(row=2, column=0, pady=10)
-        self.top_button.grid(row=2, column=1, pady=10)
-
-    def save_watermark(self):
-        self.master.watermark_text = self.top_entry.get()
-        self.master.watermark_image = self.watermark_image
-        self.top.destroy()
-
-    def image_click(self, event=None):
-        filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
-        self.watermark_image = fd.askopenfilename(title='Open Images', initialdir='C:/Program Files/LeafletCreator/Images', filetypes=filetypes)
-        self.top_image = Image.open(self.watermark_image)
-        self.top_resize_image = self.top_image.resize((50, 50))
-        self.top_photo = ImageTk.PhotoImage(self.top_resize_image)
-        self.top_image_label.configure(image=self.top_photo)
-        self.top_image_label.image = self.top_photo
-        self.top.lift()
+        rightClickMenu.check_spelling(self)
 
 
 def new_file():
