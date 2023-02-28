@@ -79,6 +79,8 @@ class LeafletCreator(tk.Tk):
         self.ignore_uncommon_words = [""]
         self.font_style = "Times New Roman"
         self.font_size = 12
+        self.watermark_image = "WikiWatermark.png"
+        self.watermark_text = ""
 
         self.lift()
 
@@ -288,7 +290,6 @@ class PageRow:
         self.complexity_icon.bind("<Button-1>", self.show_complexity_recommendations)
         self.misspelled_tag = []
         self.text = ""
-
         self.num_spaces = 0
 
     def show_complexity_recommendations(self, event):
@@ -609,24 +610,41 @@ class ChangePolarity:
 class Watermark:
     def __init__(self, master):
         self.master = master
+        self.watermark_image = self.master.watermark_image
         self.top = tk.Toplevel(master)
         self.top.geometry("300x150")
         self.top.title("Watermark")
-        self.top_label = tk.Label(self.top, text="Enter Watermark Text")
+        self.top_label = tk.Label(self.top, text="Please enter watermark text and image")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_entry = tk.Entry(self.top)
-        self.top_image = tk.PhotoImage(file="watermark.png")
-        self.top_image_label = tk.Label(self.top, image=self.top_image)
-        self.top_button2 = tk.Button(self.top, text="Set Watermark", command=self.set_watermark)
+        self.top_button_save = tk.Button(self.top, text="Save", command=self.save_watermark)
+        self.watermark_text = tk.StringVar()
+        self.watermark_text.set(self.master.watermark_text)
+        self.top_entry = tk.Entry(self.top, textvariable=self.watermark_text)
+        self.top_image = Image.open(self.watermark_image)
+        self.top_resize_image = self.top_image.resize((50, 50))
+        self.top_photo = ImageTk.PhotoImage(self.top_resize_image)
+        self.top_image_label = tk.Label(self.top, image=self.top_photo, cursor="hand2")
+        self.top_image_label.bind("<Button-1>", self.image_click)
         self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_entry.grid(row=1, column=0, columnspan=2)
-        self.top_image_label.grid(row=1, column=2)
-        self.top_button2.grid(row=2, column=0)
-        self.top_button.grid(row=2, column=1)
+        self.top_entry.grid(row=1, column=0, padx=5, pady=10)
+        self.top_image_label.grid(row=1, column=1, padx=10, pady=10)
+        self.top_button_save.grid(row=2, column=0, pady=10)
+        self.top_button.grid(row=2, column=1, pady=10)
 
-    def set_watermark(self):
-        self.master.watermark = self.top_entry.get()
+    def save_watermark(self):
+        self.master.watermark_text = self.top_entry.get()
+        self.master.watermark_image = self.watermark_image
         self.top.destroy()
+
+    def image_click(self, event=None):
+        filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
+        self.watermark_image = fd.askopenfilename(title='Open Images', initialdir='C:/Program Files/LeafletCreator/Images', filetypes=filetypes)
+        self.top_image = Image.open(self.watermark_image)
+        self.top_resize_image = self.top_image.resize((50, 50))
+        self.top_photo = ImageTk.PhotoImage(self.top_resize_image)
+        self.top_image_label.configure(image=self.top_photo)
+        self.top_image_label.image = self.top_photo
+        self.top.lift()
 
 
 def new_file():
