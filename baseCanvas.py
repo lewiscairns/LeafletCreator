@@ -1,8 +1,8 @@
 import os
 import sys
 
-import docxFiles
 import fileIO
+import menuBar
 
 import tkinter as tk
 from tkinter import filedialog as fd
@@ -16,9 +16,6 @@ from textblob import Word
 from textblob import TextBlob
 from PIL import Image, ImageTk
 from nltk.corpus import wordnet
-import subprocess
-
-pageCounter = 1
 
 
 class LeafletCreator(tk.Tk):
@@ -30,6 +27,7 @@ class LeafletCreator(tk.Tk):
 
         self.pages = []
         self.current_page = 0
+        self.pageCounter = 1
 
         self.create_page()
 
@@ -41,7 +39,7 @@ class LeafletCreator(tk.Tk):
         self.config(menu=self.menu_bar)
 
         self.file_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.file_menu.add_command(label="New", command=new_file)
+        self.file_menu.add_command(label="New", command=self.new_file)
         self.file_menu.add_command(label="Open", command=self.load)
         self.file_menu.add_command(label="Save", command=self.save)
         self.file_menu.add_command(label="Save As", command=self.save_as)
@@ -86,49 +84,29 @@ class LeafletCreator(tk.Tk):
 
         self.lift()
 
-    def title_file(self):
-        self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
-        new_title = self.user_title + " - Leaflet Creator"
-        LeafletCreator.title(self, new_title)
-
-    def create_page(self):
-        global pageCounter
-        self.pages.append(LeafletPage(self))
-        pageCounter = pageCounter + 1
-        if len(self.pages) > 1:
-            self.pages[self.current_page].grid_forget()
-            self.current_page = len(self.pages) - 1
-            self.show_page()
-        self.show_page()
-
     def show_page(self):
         self.pages[self.current_page].grid()
 
+    def new_file(self):
+        menuBar.new_file(self)
+
+    def title_file(self):
+        menuBar.title_file(self, LeafletCreator)
+
+    def create_page(self):
+        menuBar.create_page(self, LeafletPage)
+
     def next_page(self):
-        self.pages[self.current_page].grid_forget()
-        self.current_page = (self.current_page + 1) % len(self.pages)
-        self.show_page()
+        menuBar.next_page(self)
 
     def prev_page(self):
-        self.pages[self.current_page].grid_forget()
-        self.current_page = (self.current_page - 1) % len(self.pages)
-        self.show_page()
-
-    def generate(self):
-        folder_selected = fd.askdirectory(title="Select Folder To Generate File")
-        all_rows = []
-        page_counter = 0
-        for page in self.pages:
-            all_rows.append([page_counter])
-            for row in page.row1, page.row2, page.row3, page.row4:
-                label, text = row.get_row()
-                all_rows[page_counter].append([label, self.retrieve_input(text)])
-            page_counter = page_counter + 1
-        docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size)
-        tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
+        menuBar.prev_page(self)
 
     def move_page(self):
-        print("Move Page")
+        menuBar.move_page(self)
+
+    def generate(self):
+        menuBar.generate(self)
 
     def save_as(self):
         fileIO.save_as(self)
@@ -143,22 +121,22 @@ class LeafletCreator(tk.Tk):
         fileIO.load(self, LeafletCreator, LeafletPage)
 
     def change_reading_level(self):
-        ChangeReading(self)
+        menuBar.ChangeReading(self)
 
     def change_word_count(self):
-        ChangeWordCount(self)
+        menuBar.ChangeWordCount(self)
 
     def change_font(self):
-        ChangeFont(self)
+        menuBar.ChangeFont(self)
 
     def change_font_size(self):
-        ChangeFontSize(self)
+        menuBar.ChangeFontSize(self)
 
     def change_polarity(self):
-        ChangePolarity(self)
+        menuBar.ChangePolarity(self)
 
     def edit_watermark(self):
-        Watermark(self)
+        menuBar.Watermark(self)
 
     @staticmethod
     def retrieve_input(text_box):
@@ -172,7 +150,7 @@ class LeafletPage(tk.Frame):
         self.prev_button = tk.Button(self, text="Previous", command=master.prev_page, cursor="hand2")
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
-        self.page_title = tk.Label(self, text="Page " + str(pageCounter))
+        self.page_title = tk.Label(self, text="Page " + str(master.pageCounter))
         self.page_title.grid(row=1, column=1, padx=30, pady=10)
 
         self.next_button = tk.Button(self, text="Next", command=master.next_page, cursor="hand2")
