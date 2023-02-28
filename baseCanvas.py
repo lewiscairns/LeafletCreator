@@ -68,6 +68,10 @@ class LeafletCreator(tk.Tk):
         self.font_menu.add_command(label="Font Size", command=self.change_font_size)
         self.menu_bar.add_cascade(label="Font", menu=self.font_menu)
 
+        self.watermark_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.watermark_menu.add_command(label="Edit Watermark", command=self.edit_watermark)
+        self.menu_bar.add_cascade(label="Watermark", menu=self.watermark_menu)
+
         self.reading_level = 90
         self.word_count = 10
         self.polarity = 0
@@ -75,6 +79,8 @@ class LeafletCreator(tk.Tk):
         self.ignore_uncommon_words = [""]
         self.font_style = "Times New Roman"
         self.font_size = 12
+        self.watermark_image = "WikiWatermark.png"
+        self.watermark_text = ""
 
         self.lift()
 
@@ -145,7 +151,8 @@ class LeafletCreator(tk.Tk):
                     label, text = row.get_row()
                     page_text.append([label, self.retrieve_input(text)])
                 pages_text.append(page_text)
-            data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level, self.ignore_uncommon_words, self.polarity, pages_text]
+            data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level, self.ignore_uncommon_words, self.polarity, self.watermark_text,
+                    self.watermark_image, pages_text]
             lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
 
     def load(self):
@@ -162,10 +169,12 @@ class LeafletCreator(tk.Tk):
                 self.reading_level = data[4]
                 self.ignore_uncommon_words = data[5]
                 self.polarity = data[6]
+                self.watermark_text = data[7]
+                self.watermark_image = data[8]
                 new_title = (self.user_title + " - Leaflet Creator")
                 LeafletCreator.title(self, new_title)
                 self.pages = []
-                for page in data[7]:
+                for page in data[9]:
                     self.pages.append(LeafletPage(self))
                     for row in page:
                         self.pages[-1].add_row(row[0], row[1])
@@ -188,6 +197,9 @@ class LeafletCreator(tk.Tk):
 
     def change_polarity(self):
         ChangePolarity(self)
+
+    def edit_watermark(self):
+        Watermark(self)
 
     @staticmethod
     def retrieve_input(text_box):
@@ -281,7 +293,6 @@ class PageRow:
         self.complexity_icon.bind("<Button-1>", self.show_complexity_recommendations)
         self.misspelled_tag = []
         self.text = ""
-
         self.num_spaces = 0
 
     def show_complexity_recommendations(self, event):
@@ -597,6 +608,46 @@ class ChangePolarity:
     def decrease_polarity_limit(self):
         self.master.polarity = self.master.polarity - 0.1
         self.top_polarity.set(self.master.polarity)
+
+
+class Watermark:
+    def __init__(self, master):
+        self.master = master
+        self.watermark_image = self.master.watermark_image
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Watermark")
+        self.top_label = tk.Label(self.top, text="Please enter watermark text and image")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_button_save = tk.Button(self.top, text="Save", command=self.save_watermark)
+        self.watermark_text = tk.StringVar()
+        self.watermark_text.set(self.master.watermark_text)
+        self.top_entry = tk.Entry(self.top, textvariable=self.watermark_text)
+        self.top_image = Image.open(self.watermark_image)
+        self.top_resize_image = self.top_image.resize((50, 50))
+        self.top_photo = ImageTk.PhotoImage(self.top_resize_image)
+        self.top_image_label = tk.Label(self.top, image=self.top_photo, cursor="hand2")
+        self.top_image_label.bind("<Button-1>", self.image_click)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_entry.grid(row=1, column=0, padx=5, pady=10)
+        self.top_image_label.grid(row=1, column=1, padx=10, pady=10)
+        self.top_button_save.grid(row=2, column=0, pady=10)
+        self.top_button.grid(row=2, column=1, pady=10)
+
+    def save_watermark(self):
+        self.master.watermark_text = self.top_entry.get()
+        self.master.watermark_image = self.watermark_image
+        self.top.destroy()
+
+    def image_click(self, event=None):
+        filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
+        self.watermark_image = fd.askopenfilename(title='Open Images', initialdir='C:/Program Files/LeafletCreator/Images', filetypes=filetypes)
+        self.top_image = Image.open(self.watermark_image)
+        self.top_resize_image = self.top_image.resize((50, 50))
+        self.top_photo = ImageTk.PhotoImage(self.top_resize_image)
+        self.top_image_label.configure(image=self.top_photo)
+        self.top_image_label.image = self.top_photo
+        self.top.lift()
 
 
 def new_file():
