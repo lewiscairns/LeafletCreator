@@ -68,6 +68,10 @@ class LeafletCreator(tk.Tk):
         self.font_menu.add_command(label="Font Size", command=self.change_font_size)
         self.menu_bar.add_cascade(label="Font", menu=self.font_menu)
 
+        self.watermark_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.watermark_menu.add_command(label="Edit Watermark", command=self.edit_watermark)
+        self.menu_bar.add_cascade(label="Watermark", menu=self.watermark_menu)
+
         self.reading_level = 90
         self.word_count = 10
         self.polarity = 0
@@ -188,6 +192,9 @@ class LeafletCreator(tk.Tk):
 
     def change_polarity(self):
         ChangePolarity(self)
+
+    def edit_watermark(self):
+        Watermark(self)
 
     @staticmethod
     def retrieve_input(text_box):
@@ -597,6 +604,29 @@ class ChangePolarity:
     def decrease_polarity_limit(self):
         self.master.polarity = self.master.polarity - 0.1
         self.top_polarity.set(self.master.polarity)
+
+
+class Watermark:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("300x150")
+        self.top.title("Watermark")
+        self.top_label = tk.Label(self.top, text="Enter Watermark Text")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_entry = tk.Entry(self.top)
+        self.top_image = tk.PhotoImage(file="watermark.png")
+        self.top_image_label = tk.Label(self.top, image=self.top_image)
+        self.top_button2 = tk.Button(self.top, text="Set Watermark", command=self.set_watermark)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_entry.grid(row=1, column=0, columnspan=2)
+        self.top_image_label.grid(row=1, column=2)
+        self.top_button2.grid(row=2, column=0)
+        self.top_button.grid(row=2, column=1)
+
+    def set_watermark(self):
+        self.master.watermark = self.top_entry.get()
+        self.top.destroy()
 
 
 def new_file():
