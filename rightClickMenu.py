@@ -46,18 +46,21 @@ def word_right_click(self, event):
     self.text_box.mark_set("sel.first", "insert wordstart")
     self.text_box.mark_set("sel.last", "insert wordend")
     word_menu = tk.Menu(self.master, tearoff=0)
-    word_menu.add_command(label="Copy", command=self.copy_word)
-    word_menu.add_command(label="Paste", command=self.paste_word)
+    word_menu.add_command(label="Copy", command=lambda: copy_word(self))
+    word_menu.add_command(label="Paste", command=lambda: paste_word(self))
     is_wrong = get_word_replacement(self, word)
     is_uncommon = get_word_synonym(self, word)
-    if is_wrong:
-        word_menu.add_separator()
-        word_menu.add_command(label=self.replacement_word, command=self.replace_word)
-    elif is_uncommon:
-        word_menu.add_separator()
-        word_menu.add_command(label=self.synonyms[1], command=self.replace_synonym)
-        word_menu.add_separator()
-        word_menu.add_command(label="ignore", command=self.leaflet_master.ignore_uncommon_words.append(word))
+    try:
+        if is_wrong:
+            word_menu.add_separator()
+            word_menu.add_command(label=self.replacement_word, command=lambda: replace_word(self))
+        elif is_uncommon:
+            word_menu.add_separator()
+            word_menu.add_command(label=self.synonyms[1], command=lambda: replace_synonym(self))
+            word_menu.add_separator()
+            word_menu.add_command(label="ignore", command=self.leaflet_master.ignore_uncommon_words.append(word))
+    except IndexError:
+        print("Right click error")
     word_menu.tk_popup(event.x_root, event.y_root, 0)
 
 
@@ -77,7 +80,8 @@ def get_word_replacement(self, word):
 
 
 def get_word_synonym(self, word):
-    if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words or word == "\n" or word.isspace():
+    if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words \
+            or word == "\n" or word.isspace() or len(word) == 1:
         return False
     else:
         for syn in wordnet.synsets(word):
