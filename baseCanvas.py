@@ -76,7 +76,7 @@ class LeafletCreator(tk.Tk):
         self.font_style = "Times New Roman"
         self.font_size = 18
         self.watermark_image = "images/WikiWatermark.png"
-        self.watermark_text = "NHS 2022"
+        self.watermark_text = ""
 
         self.lift()
 

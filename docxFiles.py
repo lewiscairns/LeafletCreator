@@ -9,8 +9,8 @@ def create_document(title, all_rows, folder_selected, font_style, font_size, wat
     font = style.font
     font.name = font_style
     font.size = Pt(font_size)
-    document.add_heading(title, 0)
     section = document.sections[0]
+    header = section.header
     footer = section.footer
     for page in all_rows:
         table = document.add_table(rows=0, cols=2)
@@ -19,11 +19,14 @@ def create_document(title, all_rows, folder_selected, font_style, font_size, wat
             image = row_cells[0].paragraphs[0]
             text = row_cells[1].paragraphs[0]
             run = image.add_run()
-            run.add_picture(row[0], width=Inches(1.75), height=Inches(1.75))
+            run.add_picture(row[0], width=Inches(1.98), height=Inches(1.98))
             text.add_run(row[1])
+        paragraph = header.paragraphs[0]
+        paragraph.alignment = 1
+        run = paragraph.add_run()
+        run.add_text(title)
         paragraph = footer.paragraphs[0]
         paragraph.alignment = 1
-        paragraph.size = Pt(20)
         run = paragraph.add_run()
         run.add_text(watermark_text)
         run.add_text("   ")
