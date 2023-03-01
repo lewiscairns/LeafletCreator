@@ -47,7 +47,7 @@ def generate(self):
             label, text = row.get_row()
             all_rows[page_counter].append([label, self.retrieve_input(text)])
         page_counter = page_counter + 1
-    docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size)
+    docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size, self.watermark_image, self.watermark_text)
     tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
 
 
@@ -83,7 +83,7 @@ class ChangeFontSize:
         self.top = tk.Toplevel(master)
         self.top.geometry("300x150")
         self.top.title("Font Size")
-        self.top_label = tk.Label(self.top, text="Recommended Font Size is 16")
+        self.top_label = tk.Label(self.top, text="Recommended Font Size is 18")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_font_size)
         self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_font_size)
         self.top_font_size = tk.IntVar()

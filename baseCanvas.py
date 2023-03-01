@@ -74,9 +74,9 @@ class LeafletCreator(tk.Tk):
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
         self.ignore_uncommon_words = [""]
         self.font_style = "Times New Roman"
-        self.font_size = 16
-        self.watermark_image = "WikiWatermark.png"
-        self.watermark_text = ""
+        self.font_size = 18
+        self.watermark_image = "images/WikiWatermark.png"
+        self.watermark_text = "NHS 2022"
 
         self.lift()
 
@@ -149,7 +149,7 @@ class PageRow:
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
         self.text_box.tag_configure("uncommon", foreground="blue", underline=True)
         self.text_box.bind("<KeyRelease>", lambda event: rightClickMenu.check_spelling(self))
-        self.text_box.bind("<space>", lambda event: sentenceAnalysis.check_sentence(self))
+        self.text_box.bind("<space>", lambda event: complexityAnalysis.check_sentence(self))
         self.text_box.bind("<Button-3>", lambda event: rightClickMenu.word_right_click(self, event))
 
         self.complexity_filename = "images/WikiGreenCircle.png"
@@ -173,7 +173,7 @@ class PageRow:
         self.word_count = 0
         self.polarity = 0
         self.complexity_recommendations = ["", "", ""]
-        self.complexity_icon.bind("<Button-1>", lambda event: sentenceAnalysis.show_complexity_recommendations(self))
+        self.complexity_icon.bind("<Button-1>", lambda event: complexityAnalysis.show_complexity_recommendations(self))
         self.misspelled_tag = []
         self.text = ""
         self.num_spaces = 0
