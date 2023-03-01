@@ -65,11 +65,11 @@ def update_complexity(self):
 
 def update_complexity_image(self):
     if self.sentence_complexity == "Good":
-        self.complexity_filename = "WikiGreenCircle.png"
+        self.complexity_filename = "images/WikiGreenCircle.png"
     elif self.sentence_complexity == "Average":
-        self.complexity_filename = "WikiYellowCircle.png"
+        self.complexity_filename = "images/WikiYellowCircle.png"
     else:
-        self.complexity_filename = "WikiRedCircle.png"
+        self.complexity_filename = "images/WikiRedCircle.png"
 
     self.complexity_image = Image.open(self.complexity_filename)
     self.complexity_resize_image = self.complexity_image.resize((100, 100))

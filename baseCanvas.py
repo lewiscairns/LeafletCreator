@@ -137,7 +137,7 @@ class PageRow:
         self.master = master
         self.row_num = row_num
 
-        self.filename = "WikiNoImage.png"
+        self.filename = "images/WikiNoImage.png"
         self.image = Image.open(self.filename)
         self.resize_image = self.image.resize((150, 150))
         self.photo = ImageTk.PhotoImage(self.resize_image)
@@ -152,7 +152,7 @@ class PageRow:
         self.text_box.bind("<space>", lambda event: sentenceAnalysis.check_sentence(self))
         self.text_box.bind("<Button-3>", lambda event: rightClickMenu.word_right_click(self, event))
 
-        self.complexity_filename = "WikiGreenCircle.png"
+        self.complexity_filename = "images/WikiGreenCircle.png"
         self.complexity_image = Image.open(self.complexity_filename)
         self.complexity_resize_image = self.complexity_image.resize((100, 100))
         self.complexity_photo = ImageTk.PhotoImage(self.complexity_resize_image)
