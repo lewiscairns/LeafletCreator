@@ -53,27 +53,25 @@ class LeafletCreator(tk.Tk):
         self.generate_menu.add_command(label="Generate", command=lambda: menuBar.generate(self))
         self.menu_bar.add_cascade(label="Generate", menu=self.generate_menu)
 
-        self.recommendation_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.recommendation_menu.add_command(label="Reading Level", command=lambda: menuBar.ChangeReading(self))
-        self.recommendation_menu.add_command(label="Word Count", command=lambda: menuBar.ChangeWordCount(self))
-        self.recommendation_menu.add_command(label="Sentiment Rating", command=lambda: menuBar.ChangeSentiment(self))
-        self.menu_bar.add_cascade(label="Recommendations", menu=self.recommendation_menu)
+        self.footer_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.footer_menu.add_command(label="Edit Footer", command=lambda: menuBar.Footer(self))
+        self.menu_bar.add_cascade(label="Footer", menu=self.footer_menu)
 
-        self.font_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.font_menu.add_command(label="Font Style", command=lambda: menuBar.ChangeFont(self))
-        self.font_menu.add_command(label="Font Size", command=lambda: menuBar.ChangeFontSize(self))
-        self.menu_bar.add_cascade(label="Font", menu=self.font_menu)
-
-        self.watermark_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.watermark_menu.add_command(label="Edit Footer", command=lambda: menuBar.Footer(self))
-        self.menu_bar.add_cascade(label="Footer", menu=self.watermark_menu)
+        self.settings_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.settings_menu.add_command(label="Reading Level", command=lambda: menuBar.ChangeReading(self))
+        self.settings_menu.add_command(label="Word Count", command=lambda: menuBar.ChangeWordCount(self))
+        self.settings_menu.add_command(label="Sentiment Rating", command=lambda: menuBar.ChangeSentiment(self))
+        self.settings_menu.add_separator()
+        self.settings_menu.add_command(label="Document Font Style", command=lambda: menuBar.ChangeFont(self))
+        self.settings_menu.add_command(label="Document Font Size", command=lambda: menuBar.ChangeFontSize(self))
+        self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
 
         self.reading_level = 90
         self.word_count = 10
         self.polarity = 0
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
         self.ignore_uncommon_words = [""]
-        self.font_style = "Times New Roman"
+        self.font_style = "Arial"
         self.font_size = 18
         self.watermark_image = "images/WikiWatermark.png"
         self.watermark_text = ""
