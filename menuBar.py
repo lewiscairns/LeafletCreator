@@ -61,10 +61,12 @@ class ChangeFont:
         self.top = tk.Toplevel(master)
         self.top.geometry("300x150")
         self.top.title("Font Style")
+        self.top_label = tk.Label(self.top, text="The current style is: " + self.master.font_style)
         self.arial_button = tk.Button(self.top, text="Arial", command=self.arial)
         self.times_button = tk.Button(self.top, text="Times New Roman", command=self.times)
-        self.arial_button.pack()
-        self.times_button.pack()
+        self.top_label.grid(row=0, column=0, padx=10, pady=5)
+        self.arial_button.grid(row=1, column=0, padx=10, pady=5)
+        self.times_button.grid(row=2, column=0, padx=10, pady=5)
 
     def arial(self):
         self.master.font_style = "Arial"
@@ -98,12 +100,18 @@ class ChangeFontSize:
         self.top_button.grid(row=2, column=0, columnspan=2)
 
     def increase_font_size(self):
-        self.master.font_size = self.master.font_size + 1
-        self.top_font_size.set(self.master.font_size)
+        if self.master.font_size == 24:
+            pass
+        else:
+            self.master.font_size = self.master.font_size + 1
+            self.top_font_size.set(self.master.font_size)
 
     def decrease_font_size(self):
-        self.master.font_size = self.master.font_size - 1
-        self.top_font_size.set(self.master.font_size)
+        if self.master.font_size == 12:
+            pass
+        else:
+            self.master.font_size = self.master.font_size - 1
+            self.top_font_size.set(self.master.font_size)
 
 
 class ChangeReading:
@@ -127,12 +135,18 @@ class ChangeReading:
         self.top_button.grid(row=2, column=0, columnspan=2)
 
     def increase_reading_level(self):
-        self.master.reading_level = self.master.reading_level + 1
-        self.top_reading_level.set(self.master.reading_level)
+        if self.master.reading_level == 120:
+            pass
+        else:
+            self.master.reading_level = self.master.reading_level + 1
+            self.top_reading_level.set(self.master.reading_level)
 
     def decrease_reading_level(self):
-        self.master.reading_level = self.master.reading_level - 1
-        self.top_reading_level.set(self.master.reading_level)
+        if self.master.reading_level == 0:
+            pass
+        else:
+            self.master.reading_level = self.master.reading_level - 1
+            self.top_reading_level.set(self.master.reading_level)
 
 
 class ChangeWordCount:
@@ -156,12 +170,18 @@ class ChangeWordCount:
         self.top_button.grid(row=2, column=0, columnspan=2)
 
     def increase_word_count(self):
-        self.master.word_count = self.master.word_count + 1
-        self.top_word_count.set(self.master.word_count)
+        if self.master.word_count == 25:
+            pass
+        else:
+            self.master.word_count = self.master.word_count + 1
+            self.top_word_count.set(self.master.word_count)
 
     def decrease_word_count(self):
-        self.master.word_count = self.master.word_count - 1
-        self.top_word_count.set(self.master.word_count)
+        if self.master.word_count == 1:
+            pass
+        else:
+            self.master.word_count = self.master.word_count - 1
+            self.top_word_count.set(self.master.word_count)
 
 
 class ChangeSentiment:
@@ -187,12 +207,18 @@ class ChangeSentiment:
         self.top_button.grid(row=3, column=0, columnspan=2)
 
     def increase_polarity_limit(self):
-        self.master.polarity = self.master.polarity + 0.1
-        self.top_polarity.set(self.master.polarity)
+        if self.master.polarity == 1:
+            pass
+        else:
+            self.master.polarity = self.master.polarity + 0.1
+            self.top_polarity.set(self.master.polarity)
 
     def decrease_polarity_limit(self):
-        self.master.polarity = self.master.polarity - 0.1
-        self.top_polarity.set(self.master.polarity)
+        if self.master.polarity == -1:
+            pass
+        else:
+            self.master.polarity = self.master.polarity - 0.1
+            self.top_polarity.set(self.master.polarity)
 
 
 class Footer:
