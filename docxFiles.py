@@ -3,13 +3,15 @@ from docx.shared import Inches
 from docx.shared import Pt
 
 
-def create_document(title, all_rows, folder_selected, font_style, font_size):
+def create_document(title, all_rows, folder_selected, font_style, font_size, watermark_image, watermark_text):
     document = Document()
     style = document.styles['Normal']
     font = style.font
     font.name = font_style
     font.size = Pt(font_size)
-    document.add_heading(title, 0)
+    section = document.sections[0]
+    header = section.header
+    footer = section.footer
     for page in all_rows:
         table = document.add_table(rows=0, cols=2)
         for row in page[1:]:
@@ -17,6 +19,16 @@ def create_document(title, all_rows, folder_selected, font_style, font_size):
             image = row_cells[0].paragraphs[0]
             text = row_cells[1].paragraphs[0]
             run = image.add_run()
-            run.add_picture(row[0], width=Inches(1.75), height=Inches(1.75))
+            run.add_picture(row[0], width=Inches(1.98), height=Inches(1.98))
             text.add_run(row[1])
+        paragraph = header.paragraphs[0]
+        paragraph.alignment = 1
+        run = paragraph.add_run()
+        run.add_text(title)
+        paragraph = footer.paragraphs[0]
+        paragraph.alignment = 1
+        run = paragraph.add_run()
+        run.add_text(watermark_text)
+        run.add_text("   ")
+        run.add_picture(watermark_image, width=Inches(0.20), height=Inches(0.20))
     document.save(folder_selected + "/" + title + '.docx')
