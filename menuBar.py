@@ -224,7 +224,8 @@ class Watermark:
         self.master.watermark_image = self.watermark_image
         self.top.destroy()
 
-    def image_click(self, event=None):
+    # noinspection PyUnusedLocal
+    def image_click(self, event):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
         self.watermark_image = fd.askopenfilename(title='Open Images',
                                                   initialdir='C:/Program Files/LeafletCreator/Images',

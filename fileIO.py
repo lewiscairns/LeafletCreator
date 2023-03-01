@@ -1,5 +1,3 @@
-import menuBar
-
 import pickle as lc
 import tkinter as tk
 from tkinter import filedialog as fd
@@ -9,7 +7,7 @@ from tkinter.messagebox import showinfo
 def save_as(self):
     try:
         self.saved_folder = fd.askdirectory(title="Select Folder To Generate File")
-        self.saving()
+        saving(self)
         tk.messagebox.showinfo("Success", "Your document has been saved")
     except Exception as e:
         print("Error: " + str(e))
@@ -17,7 +15,7 @@ def save_as(self):
 
 def save(self):
     try:
-        self.saving()
+        saving(self)
     except Exception as e:
         print("Error: " + str(e))
 
