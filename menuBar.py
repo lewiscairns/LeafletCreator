@@ -164,14 +164,14 @@ class ChangeWordCount:
         self.top_word_count.set(self.master.word_count)
 
 
-class ChangePolarity:
+class ChangeSentiment:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
         self.top.geometry("300x150")
-        self.top.title("Sentiment Polarity")
-        self.top_label = tk.Label(self.top, text="Recommended Sentiment Polarity is 0")
-        self.top_label2 = tk.Label(self.top, text="Polarity is a number between -1 and 1")
+        self.top.title("Sentiment Rating")
+        self.top_label = tk.Label(self.top, text="Recommended Sentiment Rating is 0")
+        self.top_label2 = tk.Label(self.top, text="Most positive rating is 1, most negative rating is -1")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_polarity_limit)
         self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_polarity_limit)
         self.top_polarity = tk.IntVar()
@@ -195,13 +195,13 @@ class ChangePolarity:
         self.top_polarity.set(self.master.polarity)
 
 
-class Watermark:
+class Footer:
     def __init__(self, master):
         self.master = master
         self.watermark_image = self.master.watermark_image
         self.top = tk.Toplevel(master)
         self.top.geometry("300x150")
-        self.top.title("Watermark")
+        self.top.title("Footer")
         self.top_label = tk.Label(self.top, text="Please enter watermark text and image")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
         self.top_button_save = tk.Button(self.top, text="Save", command=self.save_watermark)

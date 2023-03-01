@@ -27,7 +27,7 @@ def check_sentence(self):
     if self.reading_level < self.leaflet_master.reading_level:
         self.sentence_issues[0] = True
         self.complexity_recommendations[0] = "Reading level is: " + str(
-            round(self.reading_level)) + "\nTry keep it below " + str(self.leaflet_master.reading_level) + ".\n"
+            round(self.reading_level)) + "\nTry keep it below " + str(self.leaflet_master.reading_level) + "\n"
     elif self.reading_level > self.leaflet_master.reading_level:
         self.sentence_issues[0] = False
         self.complexity_recommendations[0] = ""
@@ -44,8 +44,8 @@ def check_sentence(self):
     self.polarity = TextBlob(self.text_box.get("1.0", "end-1c")).sentiment.polarity
     if self.polarity < self.leaflet_master.polarity:
         self.sentence_issues[2] = True
-        self.complexity_recommendations[2] = "Current polarity (how positive your sentence is) is: " + str(
-            round(self.polarity, 2)) + "\nTry keep it above " + str(self.leaflet_master.polarity) + ".\n"
+        self.complexity_recommendations[2] = "Current sentiment rating (how positive your sentence is) is: " + str(
+            round(self.polarity, 2)) + "\nTry keep it above " + str(self.leaflet_master.polarity) + "\n"
     elif self.polarity > self.leaflet_master.polarity:
         self.sentence_issues[2] = False
         self.complexity_recommendations[2] = ""

@@ -3,7 +3,7 @@ import sys
 
 import fileIO
 import menuBar
-import sentenceAnalysis
+import complexityAnalysis
 import rightClickMenu
 
 import tkinter as tk
@@ -56,7 +56,7 @@ class LeafletCreator(tk.Tk):
         self.recommendation_menu = tk.Menu(self.menu_bar, tearoff=False)
         self.recommendation_menu.add_command(label="Reading Level", command=lambda: menuBar.ChangeReading(self))
         self.recommendation_menu.add_command(label="Word Count", command=lambda: menuBar.ChangeWordCount(self))
-        self.recommendation_menu.add_command(label="Polarity", command=lambda: menuBar.ChangePolarity(self))
+        self.recommendation_menu.add_command(label="Sentiment Rating", command=lambda: menuBar.ChangeSentiment(self))
         self.menu_bar.add_cascade(label="Recommendations", menu=self.recommendation_menu)
 
         self.font_menu = tk.Menu(self.menu_bar, tearoff=False)
@@ -65,8 +65,8 @@ class LeafletCreator(tk.Tk):
         self.menu_bar.add_cascade(label="Font", menu=self.font_menu)
 
         self.watermark_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.watermark_menu.add_command(label="Edit Watermark", command=lambda: menuBar.Watermark(self))
-        self.menu_bar.add_cascade(label="Watermark", menu=self.watermark_menu)
+        self.watermark_menu.add_command(label="Edit Footer", command=lambda: menuBar.Footer(self))
+        self.menu_bar.add_cascade(label="Footer", menu=self.watermark_menu)
 
         self.reading_level = 90
         self.word_count = 10
@@ -74,7 +74,7 @@ class LeafletCreator(tk.Tk):
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
         self.ignore_uncommon_words = [""]
         self.font_style = "Times New Roman"
-        self.font_size = 12
+        self.font_size = 16
         self.watermark_image = "WikiWatermark.png"
         self.watermark_text = ""
 

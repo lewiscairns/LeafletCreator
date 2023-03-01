@@ -9,7 +9,11 @@ def word_complexity_check(self):
         word_positions = [i for i in range(len(self.text)) if self.text.startswith(word, i)]
         word = self.regex.sub('', word)
         for position in word_positions:
-            if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words:
+            if get_word_synonym(self, word) and len(self.synonyms) == 0:
+                self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
+                self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
+                self.misspelled_tag.append(position)
+            elif word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_uncommon_words:
                 self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
             elif position in self.misspelled_tag:
                 self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
