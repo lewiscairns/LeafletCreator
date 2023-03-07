@@ -155,7 +155,7 @@ class ChangeWordCount:
         self.top = tk.Toplevel(master)
         self.top.geometry("300x150")
         self.top.title("Word Count")
-        self.top_label = tk.Label(self.top, text="Recommended Word Count is 10")
+        self.top_label = tk.Label(self.top, text="Recommended Word Count is 15")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_word_count)
         self.top_button_down = tk.Button(self.top, text="-", command=self.decrease_word_count)
         self.top_word_count = tk.IntVar()

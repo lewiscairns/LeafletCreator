@@ -67,7 +67,7 @@ class LeafletCreator(tk.Tk):
         self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
 
         self.reading_level = 90
-        self.word_count = 10
+        self.word_count = 15
         self.polarity = 0
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
         self.ignore_uncommon_words = [""]
