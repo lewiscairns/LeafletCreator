@@ -9,6 +9,8 @@ def create_document(title, all_rows, folder_selected, font_style, font_size, wat
     font = style.font
     font.name = font_style
     font.size = Pt(font_size)
+    paragraph_format = style.paragraph_format
+    paragraph_format.line_spacing = 1.5
     section = document.sections[0]
     header = section.header
     footer = section.footer

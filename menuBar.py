@@ -59,14 +59,18 @@ class ChangeFont:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("300x200")
         self.top.title("Font Style")
         self.top_label = tk.Label(self.top, text="The current style is: " + self.master.font_style)
         self.arial_button = tk.Button(self.top, text="Arial", command=self.arial)
         self.times_button = tk.Button(self.top, text="Times New Roman", command=self.times)
+        self.helvetica_button = tk.Button(self.top, text="Helvetica", command=self.helvetica)
+        self.calibri_button = tk.Button(self.top, text="Calibri", command=self.calibri)
         self.top_label.grid(row=0, column=0, padx=10, pady=5)
         self.arial_button.grid(row=1, column=0, padx=10, pady=5)
         self.times_button.grid(row=2, column=0, padx=10, pady=5)
+        self.helvetica_button.grid(row=3, column=0, padx=10, pady=5)
+        self.calibri_button.grid(row=4, column=0, padx=10, pady=5)
 
     def arial(self):
         self.master.font_style = "Arial"
@@ -77,6 +81,16 @@ class ChangeFont:
         self.master.font_style = "Times New Roman"
         self.top.destroy()
         tk.messagebox.showinfo("Success", "Your document will now generate in Times New Roman as the font style")
+
+    def helvetica(self):
+        self.master.font_style = "Helvetica"
+        self.top.destroy()
+        tk.messagebox.showinfo("Success", "Your document will now generate in Helvetica as the font style")
+
+    def calibri(self):
+        self.master.font_style = "Calibri"
+        self.top.destroy()
+        tk.messagebox.showinfo("Success", "Your document will now generate in Calibri as the font style")
 
 
 class ChangeFontSize:
