@@ -20,6 +20,7 @@ class LeafletCreator(tk.Tk):
 
         self.title("Untitled - Leaflet Creator")
         self.geometry("1000x900")
+        self.state('zoomed')
 
         self.pages = []
         self.current_page = 0
