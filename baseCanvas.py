@@ -66,8 +66,15 @@ class LeafletCreator(tk.Tk):
         self.settings_menu.add_command(label="Document Font Size", command=lambda: menuBar.ChangeFontSize(self))
         self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
 
+        self.easy_read_advice = tk.Menu(self.menu_bar, tearoff=False)
+        self.easy_read_advice.add_command(label="What is Easy Read", command=lambda: menuBar.WhatEasyRead(self))
+        self.easy_read_advice.add_command(label="English into Easy Read", command=lambda: menuBar.EnglishEasyRead(self))
+        self.easy_read_advice.add_command(label="Style of Easy Read content", command=lambda: menuBar.ContentEasyRead(self))
+        self.easy_read_advice.add_command(label="Do's and Don'ts", command=lambda: menuBar.DoEasyRead(self))
+        self.menu_bar.add_cascade(label="Easy Read Advice", menu=self.easy_read_advice)
+
         self.reading_level = 90
-        self.word_count = 10
+        self.word_count = 15
         self.polarity = 0
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
         self.ignore_uncommon_words = [""]
