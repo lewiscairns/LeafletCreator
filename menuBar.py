@@ -276,3 +276,103 @@ class Footer:
         self.top_image_label.configure(image=self.top_photo)
         self.top_image_label.image = self.top_photo
         self.top.lift()
+
+
+class WhatEasyRead:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("500x300")
+        self.top.title("What is Easy Read?")
+        self.top_label = tk.Label(self.top, text="Focus on key message")
+        self.top_label2 = tk.Label(self.top, text="Find the key message that is being conveyed, \n removing the information that isn’t useful to this key message.\n")
+        self.top_label3 = tk.Label(self.top, text="Put message into Easy Read form")
+        self.top_label4 = tk.Label(self.top, text="Take the message and put it into simple English, and make sure to split \n the content into multiple documents if one is too long, as too not overwhelm the reader.\n")
+        self.top_label5 = tk.Label(self.top, text="Make sure it is Easy to Read")
+        self.top_label6 = tk.Label(self.top, text="Ensure jargon and acronyms are explained or removed, \n and test your content on people with learning disabilities.\n")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label2.grid(row=1, column=0, columnspan=2)
+        self.top_label3.grid(row=2, column=0, columnspan=2)
+        self.top_label4.grid(row=3, column=0, columnspan=2)
+        self.top_label5.grid(row=4, column=0, columnspan=2)
+        self.top_label6.grid(row=5, column=0, columnspan=2)
+        self.top_button.grid(row=6, column=0, columnspan=2)
+
+
+class EnglishEasyRead:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("600x500")
+        self.top.title("English EasyRead")
+        self.top_label = tk.Label(self.top, text="Keep information clear")
+        self.top_label2 = tk.Label(self.top, text="Write information in a logical order, as if you were speaking it to the \n reader, and in sentences that aren’t too long, with 15 words being a good limit.\n")
+        self.top_label3 = tk.Label(self.top, text="Deal with technical terms")
+        self.top_label4 = tk.Label(self.top, text="Technical terms may need to be included, and these should be explained, \n which can be done in a glossary rather than repeating the explanation over and over.\n")
+        self.top_label5 = tk.Label(self.top, text="Simplify punctuation")
+        self.top_label6 = tk.Label(self.top, text="Use simple punctuation, such as commas and full stops, while avoiding less common ones such \n as colons and dashes, and split the sentence or use bullet points instead of too many commas.\n")
+        self.top_label7 = tk.Label(self.top, text="Use personal language")
+        self.top_label8 = tk.Label(self.top, text="Personal language such as “I”, “You”, and “We” while being explicate over \n who these mean, for example “We in this document means the NHS”.\n")
+        self.top_label9 = tk.Label(self.top, text="Avoid percentages and numerals")
+        self.top_label10 = tk.Label(self.top, text="Using generalized words such as “Most” instead of exact percentages and words \n over numerals such as “three” instead of “3” makes your document easier to understand.\n")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label2.grid(row=1, column=0, columnspan=2)
+        self.top_label3.grid(row=2, column=0, columnspan=2)
+        self.top_label4.grid(row=3, column=0, columnspan=2)
+        self.top_label5.grid(row=4, column=0, columnspan=2)
+        self.top_label6.grid(row=5, column=0, columnspan=2)
+        self.top_label7.grid(row=6, column=0, columnspan=2)
+        self.top_label8.grid(row=7, column=0, columnspan=2)
+        self.top_label9.grid(row=8, column=0, columnspan=2)
+        self.top_label10.grid(row=9, column=0, columnspan=2)
+        self.top_button.grid(row=10, column=0, columnspan=2)
+
+
+class ContentEasyRead:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("600x200")
+        self.top.title("Content EasyRead")
+        self.top_label = tk.Label(self.top, text="Try not to confuse the reader")
+        self.top_label2 = tk.Label(self.top, text="Writing in facts is better than metaphors, as metaphors can confuse the reader instead of helping \n the reader, being simple and direct while keeping ideas or actions to one sentence is best.")
+        self.top_label3 = tk.Label(self.top, text="Be clear and consistent")
+        self.top_label4 = tk.Label(self.top, text="Language used in the document should be kept consistent, such as not switching between “doctor” and \n “GP”, and ensure that it is clear what is information and what requires action from the reader.")
+        self.top_label5 = tk.Label(self.top, text="Use bold when needed")
+        self.top_label6 = tk.Label(self.top, text="To highlight import words, bold can be used, but remember that not everyone will notice this.")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label2.grid(row=1, column=0, columnspan=2)
+        self.top_label3.grid(row=2, column=0, columnspan=2)
+        self.top_label4.grid(row=3, column=0, columnspan=2)
+        self.top_label5.grid(row=4, column=0, columnspan=2)
+        self.top_label6.grid(row=5, column=0, columnspan=2)
+        self.top_button.grid(row=6, column=0, columnspan=2)
+
+
+class DoEasyRead:
+    def __init__(self, master):
+        self.master = master
+        self.top = tk.Toplevel(master)
+        self.top.geometry("500x500")
+        self.top.title("Do EasyRead")
+        self.top_label = tk.Label(self.top, text="Words are useful for")
+        self.top_label2 = tk.Label(self.top, text="o  Explaining in detail \no  Giving lots of information \no  Ensure there is as little mis-understanding as possible \n")
+        self.top_label3 = tk.Label(self.top, text="Pictures are useful for")
+        self.top_label4 = tk.Label(self.top, text="o  Understood by anyone no matter their reading level \no  Support the ideas in the text \no  Show a key person, object, action, or place \no  More interesting and digestible for the reader \n")
+        self.top_label5 = tk.Label(self.top, text="Avoid using:")
+        self.top_label6 = tk.Label(self.top, text="o  Jargon and hard / uncommon words \no  Putting words in all capitals \no  Pictures were colour blind people may not understand the meaning \no  Avoid abstracting who is being talked to, use “You” over “One” for example \no  Blurred or overly convoluted pictures \no  Symbolic or abstract pictures \n")
+        self.top_label7 = tk.Label(self.top, text="Try using:")
+        self.top_label8 = tk.Label(self.top, text="o  “Do not”, “can not”, and “would not” over “don’t”, “can’t”, “won’t” as \n some readers may require the word not in the sentence to understand it \no  The word for “percent” or “pound” over “%” and “£” \no  Pictures that support the text, not take away from it \no  Pictures that are clear and easy to understand \no  Pictures that are not too busy \n")
+        self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label2.grid(row=1, column=0, columnspan=2)
+        self.top_label3.grid(row=2, column=0, columnspan=2)
+        self.top_label4.grid(row=3, column=0, columnspan=2)
+        self.top_label5.grid(row=4, column=0, columnspan=2)
+        self.top_label6.grid(row=5, column=0, columnspan=2)
+        self.top_label7.grid(row=6, column=0, columnspan=2)
+        self.top_label8.grid(row=7, column=0, columnspan=2)
+        self.top_button.grid(row=8, column=0, columnspan=2)
