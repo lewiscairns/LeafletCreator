@@ -356,11 +356,11 @@ class DoEasyRead:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("500x500")
+        self.top.geometry("450x500")
         self.top.title("Do EasyRead")
-        self.top_label = tk.Label(self.top, text="Words are useful for")
+        self.top_label = tk.Label(self.top, text="Words are useful for:")
         self.top_label2 = tk.Label(self.top, text="o  Explaining in detail \no  Giving lots of information \no  Ensure there is as little mis-understanding as possible \n")
-        self.top_label3 = tk.Label(self.top, text="Pictures are useful for")
+        self.top_label3 = tk.Label(self.top, text="Pictures are useful for:")
         self.top_label4 = tk.Label(self.top, text="o  Understood by anyone no matter their reading level \no  Support the ideas in the text \no  Show a key person, object, action, or place \no  More interesting and digestible for the reader \n")
         self.top_label5 = tk.Label(self.top, text="Avoid using:")
         self.top_label6 = tk.Label(self.top, text="o  Jargon and hard / uncommon words \no  Putting words in all capitals \no  Pictures were colour blind people may not understand the meaning \no  Avoid abstracting who is being talked to, use “You” over “One” for example \no  Blurred or overly convoluted pictures \no  Symbolic or abstract pictures \n")
