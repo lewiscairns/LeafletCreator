@@ -19,7 +19,6 @@ class LeafletCreator(tk.Tk):
         super().__init__()
 
         self.title("Untitled - Leaflet Creator")
-        self.geometry("1000x900")
         self.state('zoomed')
         self.grid_columnconfigure(0, weight=1)
 
