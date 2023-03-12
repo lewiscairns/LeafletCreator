@@ -19,7 +19,6 @@ class LeafletCreator(tk.Tk):
         super().__init__()
 
         self.title("Untitled - Leaflet Creator")
-        self.geometry("1000x900")
         self.state('zoomed')
         self.grid_columnconfigure(0, weight=1)
 
@@ -84,6 +83,7 @@ class LeafletCreator(tk.Tk):
         self.font_size = 18
         self.watermark_image = "images/WikiWatermark.png"
         self.watermark_text = ""
+        self.complex_grammar_list = ["might", "an", "because"]
 
         self.lift()
 
@@ -175,11 +175,11 @@ class PageRow:
         self.synonyms = []
 
         self.sentence_complexity = "Good"
-        self.sentence_issues = np.array([False, False, False])
+        self.sentence_issues = np.array([False, False, False, False])
         self.reading_level = 0
         self.word_count = 0
         self.polarity = 0
-        self.complexity_recommendations = ["", "", ""]
+        self.complexity_recommendations = ["", "", "", ""]
         self.complexity_icon.bind("<Button-1>", lambda event: complexityAnalysis.show_complexity_recommendations(self))
         self.misspelled_tag = []
         self.text = ""
