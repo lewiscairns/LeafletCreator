@@ -50,6 +50,14 @@ def check_sentence(self):
         self.sentence_issues[2] = False
         self.complexity_recommendations[2] = ""
 
+    self.grammatical_detection = check_for_complex_grammar(self, self.text_box.get("1.0", "end-1c").split())
+    if self.grammatical_detection != "":
+        self.sentence_issues[3] = True
+        self.complexity_recommendations[3] = "You have used a complex grammatical word: " + self.grammatical_detection + "\n" + "Try splitting this sentence into 2 instead.\n"
+    else:
+        self.sentence_issues[3] = False
+        self.complexity_recommendations[3] = ""
+
     update_complexity(self)
 
 
@@ -76,3 +84,11 @@ def update_complexity_image(self):
     self.complexity_photo = ImageTk.PhotoImage(self.complexity_resize_image)
     self.complexity_icon.configure(image=self.complexity_photo)
     self.complexity_icon.image = self.complexity_photo
+
+
+def check_for_complex_grammar(self, sentence):
+    complex_grammar = ""
+    for word in sentence:
+        if word.lower() in self.leaflet_master.complex_grammar_list:
+            complex_grammar = word
+    return complex_grammar
