@@ -78,7 +78,7 @@ class LeafletCreator(tk.Tk):
         self.word_count = 15
         self.polarity = 0
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
-        self.ignore_uncommon_words = [""]
+        self.ignore_words = []
         self.font_style = "Arial"
         self.font_size = 18
         self.watermark_image = "images/WikiWatermark.png"
