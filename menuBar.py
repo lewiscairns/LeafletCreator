@@ -27,13 +27,13 @@ def create_page(self, master_page):
 
 def next_page(self):
     self.pages[self.current_page].grid_forget()
-    self.current_page = (self.current_page + 1) % len(self.pages)
+    self.current_page = (self.current_page - 1) % len(self.pages)
     self.show_page()
 
 
 def prev_page(self):
     self.pages[self.current_page].grid_forget()
-    self.current_page = (self.current_page - 1) % len(self.pages)
+    self.current_page = (self.current_page + 1) % len(self.pages)
     self.show_page()
 
 
