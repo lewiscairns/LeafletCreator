@@ -2,6 +2,7 @@ import tkinter as tk
 
 from textblob import Word
 from nltk.corpus import wordnet
+import re
 
 
 def check_spelling(self):
@@ -17,11 +18,12 @@ def check_spelling(self):
             suggestion_text = suggestion[0]
             suggestion_text = str(suggestion_text).split(" ", 1)[0]
             suggestion_text = self.regex.sub('', suggestion_text)
-            word = self.regex.sub('', word)
+            word = re.sub(r'[.;:,?"!/]', '', word)
+            word_parsed = self.regex.sub('', word)
             for position in word_positions:
                 self.misspelled_tag.append(position)
-                word_found = find_word_in_list(suggestion, word)
-                if suggestion_text != "n" and word_found is False and word != "\n" and word.isspace() is False and len(word) \
+                word_found = find_word_in_list(suggestion, word_parsed)
+                if suggestion_text != "n" and word_found is False and word_parsed != "\n" and word_parsed.isspace() is False and len(word_parsed) \
                         != 1 and word not in self.leaflet_master.ignore_words:
                     self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
                 else:
@@ -33,14 +35,15 @@ def check_spelling(self):
 def word_complexity_check(self):
     for word in self.text.split(' '):
         word_positions = [i for i in range(len(self.text)) if self.text.startswith(word, i)]
-        word = self.regex.sub('', word)
         word = word.lower()
+        word = re.sub(r'[.;:,?"!/]', '', word)
+        word_parsed = self.regex.sub('', word)
         for position in word_positions:
-            if get_word_synonym(self, word) and len(self.synonyms) == 0 and word not in self.leaflet_master.ignore_words:
+            if get_word_synonym(self, word_parsed) and len(self.synonyms) == 0 and word not in self.leaflet_master.ignore_words:
                 self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
                 self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
                 self.misspelled_tag.append(position)
-            elif word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_words or position in self.misspelled_tag:
+            elif word_parsed in self.leaflet_master.common_words or word in self.leaflet_master.ignore_words or position in self.misspelled_tag:
                 self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
             else:
                 self.text_box.tag_add("uncommon", f'1.{position}', f'1.{position + len(word)}')
@@ -58,20 +61,36 @@ def word_right_click(self, event):
     self.text_box.mark_set("insert", "@%d,%d" % (event.x, event.y))
     self.text_box.mark_set("sel.first", "insert wordstart")
     self.text_box.mark_set("sel.last", "insert wordend")
+    wrong_ranges = self.text_box.tag_ranges("wrong")
+    uncommon_ranges = self.text_box.tag_ranges("uncommon")
     word_menu = tk.Menu(self.master, tearoff=0)
     word_menu.add_command(label="Copy", command=lambda: copy_word(self))
     word_menu.add_command(label="Paste", command=lambda: paste_word(self))
-    is_wrong = get_word_replacement(self, word)
-    is_uncommon = get_word_synonym(self, word)
+    is_wrong = False
+    is_uncommon = False
+
+    for i in range(0, len(wrong_ranges), 2):
+        if str(self.text_box.index("sel.first")) == str(wrong_ranges[i]):
+            is_wrong = True
+            get_word_replacement(self, word)
+            break
+    for i in range(0, len(uncommon_ranges), 2):
+        if str(self.text_box.index("sel.first")) == str(uncommon_ranges[i]):
+            is_uncommon = True
+            get_word_synonym(self, word)
+            break
+
     try:
         if is_wrong:
-            word_menu.add_separator()
-            word_menu.add_command(label=self.replacement_word, command=lambda: replace_word(self))
+            if self.replacement_word != "":
+                word_menu.add_separator()
+                word_menu.add_command(label=self.replacement_word, command=lambda: replace_word(self))
             word_menu.add_separator()
             word_menu.add_command(label="ignore warning", command=lambda: ignore_word(self, word))
         elif is_uncommon:
-            word_menu.add_separator()
-            word_menu.add_command(label=self.synonyms[1], command=lambda: replace_synonym(self))
+            if len(self.synonyms) > 0:
+                word_menu.add_separator()
+                word_menu.add_command(label=self.synonyms[1], command=lambda: replace_synonym(self))
             word_menu.add_separator()
             word_menu.add_command(label="ignore warning", command=lambda: ignore_word(self, word))
     except IndexError:
@@ -100,6 +119,7 @@ def get_word_replacement(self, word):
 
 
 def get_word_synonym(self, word):
+    self.synonyms = []
     if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_words \
             or word == "\n" or word.isspace() or len(word) == 1:
         return False
