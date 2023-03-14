@@ -121,18 +121,22 @@ class LeafletPage(tk.Frame):
             self.row1.label_image.configure(image=photo)
             self.row1.label_image.image = photo
             self.row1.text_box.insert(tk.END, text)
+            self.row1.filename = label
         elif self.row2.text_box.get("1.0", "end-1c") == "":
             self.row2.label_image.configure(image=photo)
             self.row2.label_image.image = photo
             self.row2.text_box.insert(tk.END, text)
+            self.row2.filename = label
         elif self.row3.text_box.get("1.0", "end-1c") == "":
             self.row3.label_image.configure(image=photo)
             self.row3.label_image.image = photo
             self.row3.text_box.insert(tk.END, text)
+            self.row3.filename = label
         elif self.row4.text_box.get("1.0", "end-1c") == "":
             self.row4.label_image.configure(image=photo)
             self.row4.label_image.image = photo
             self.row4.text_box.insert(tk.END, text)
+            self.row4.filename = label
         else:
             print("Error: No more rows available")
 

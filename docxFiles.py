@@ -33,7 +33,7 @@ def create_document(title, all_rows, folder_selected, font_style, font_size, wat
             image = row_cells[0].paragraphs[0]
             text = row_cells[1].paragraphs[0]
             run = image.add_run()
-            run.add_picture(row[0], width=Inches(1.95), height=Inches(1.95))
+            run.add_picture(row[0], width=Inches(1.80), height=Inches(1.80))
             text.add_run(row[1])
 
     document.save(folder_selected + "/" + title + '.docx')
