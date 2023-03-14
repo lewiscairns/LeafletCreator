@@ -78,7 +78,7 @@ class LeafletCreator(tk.Tk):
         self.word_count = 15
         self.polarity = 0
         self.common_words = open('top-10000-words.txt', 'r').read().splitlines()
-        self.ignore_uncommon_words = [""]
+        self.ignore_words = []
         self.font_style = "Arial"
         self.font_size = 18
         self.watermark_image = "images/WikiWatermark.png"
@@ -99,7 +99,7 @@ class LeafletCreator(tk.Tk):
 class LeafletPage(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.prev_button = tk.Button(self, text="Previous", command=lambda: menuBar.next_page(self), cursor="hand2")
+        self.prev_button = tk.Button(self, text="Previous", command=lambda: menuBar.next_page(master), cursor="hand2")
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
         self.page_title = tk.Label(self, text="Page " + str(master.page_counter))
@@ -117,22 +117,30 @@ class LeafletPage(tk.Frame):
         image = Image.open(label)
         resize_image = image.resize((150, 150))
         photo = ImageTk.PhotoImage(resize_image)
-        if self.row1.text_box.get("1.0", "end-1c") == "":
+        if not self.row1.built:
             self.row1.label_image.configure(image=photo)
             self.row1.label_image.image = photo
             self.row1.text_box.insert(tk.END, text)
-        elif self.row2.text_box.get("1.0", "end-1c") == "":
+            self.row1.filename = label
+            self.row1.built = True
+        elif not self.row2.built:
             self.row2.label_image.configure(image=photo)
             self.row2.label_image.image = photo
             self.row2.text_box.insert(tk.END, text)
-        elif self.row3.text_box.get("1.0", "end-1c") == "":
+            self.row2.filename = label
+            self.row2.built = True
+        elif not self.row3.built:
             self.row3.label_image.configure(image=photo)
             self.row3.label_image.image = photo
             self.row3.text_box.insert(tk.END, text)
-        elif self.row4.text_box.get("1.0", "end-1c") == "":
+            self.row3.filename = label
+            self.row3.built = True
+        elif not self.row4.built:
             self.row4.label_image.configure(image=photo)
             self.row4.label_image.image = photo
             self.row4.text_box.insert(tk.END, text)
+            self.row4.filename = label
+            self.row4.built = True
         else:
             print("Error: No more rows available")
 
@@ -140,6 +148,7 @@ class LeafletPage(tk.Frame):
 # noinspection PyUnusedLocal
 class PageRow:
     def __init__(self, master, row_num, leaflet_master):
+        self.built = False
         self.leaflet_master = leaflet_master
         self.master = master
         self.row_num = row_num

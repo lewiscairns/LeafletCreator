@@ -30,7 +30,7 @@ def saving(self):
                 page_text.append([label, self.retrieve_input(text)])
             pages_text.append(page_text)
         data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level,
-                self.ignore_uncommon_words, self.polarity, self.watermark_text,
+                self.ignore_words, self.polarity, self.watermark_text,
                 self.watermark_image, self.saved_folder, pages_text]
         lc.dump(data, file, protocol=lc.HIGHEST_PROTOCOL)
 
@@ -47,7 +47,7 @@ def load(self, master, master_page):
             self.font_style = data[2]
             self.word_count = data[3]
             self.reading_level = data[4]
-            self.ignore_uncommon_words = data[5]
+            self.ignore_words = data[5]
             self.polarity = data[6]
             self.watermark_text = data[7]
             self.watermark_image = data[8]
