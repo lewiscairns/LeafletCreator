@@ -3,6 +3,9 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
+import complexityAnalysis
+import rightClickMenu
+
 
 def save_as(self):
     try:
@@ -65,3 +68,7 @@ def load(self, master, master_page):
         print("Error: " + str(e))
     self.current_page = 0
     self.show_page()
+    for page in self.pages:
+        for row in page.row1, page.row2, page.row3, page.row4:
+            rightClickMenu.check_spelling(row)
+            complexityAnalysis.check_sentence(row)

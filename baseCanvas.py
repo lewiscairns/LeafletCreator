@@ -165,7 +165,7 @@ class PageRow:
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
         self.text_box.tag_configure("uncommon", foreground="blue", underline=True)
         self.text_box.bind("<KeyRelease>", lambda event: rightClickMenu.check_spelling(self))
-        self.text_box.bind("<space>", lambda event: complexityAnalysis.check_sentence(self))
+        self.text_box.bind("<Key>", lambda event: complexityAnalysis.check_sentence(self))
         self.text_box.bind("<Button-3>", lambda event: rightClickMenu.word_right_click(self, event))
 
         self.complexity_filename = "images/WikiGreenCircle.png"
