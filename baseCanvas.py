@@ -188,7 +188,7 @@ class PageRow:
         self.reading_level = 0
         self.word_count = 0
         self.polarity = 0
-        self.complexity_recommendations = ["", "", "", ""]
+        self.complexity_recommendations = []
         self.complexity_icon.bind("<Button-1>", lambda event: complexityAnalysis.show_complexity_recommendations(self))
         self.misspelled_tag = []
         self.text = ""

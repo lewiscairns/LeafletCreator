@@ -23,42 +23,54 @@ def show_complexity_recommendations(self):
 
 
 def check_sentence(self):
-    self.reading_level = textstat.flesch_reading_ease(self.text_box.get("1.0", "end-1c"))
-    if self.reading_level < self.leaflet_master.reading_level:
-        self.sentence_issues[0] = True
-        self.complexity_recommendations[0] = "Reading level is: " + str(
-            round(self.reading_level)) + "\nTry keep it below " + str(self.leaflet_master.reading_level) + "\n"
-    elif self.reading_level > self.leaflet_master.reading_level:
-        self.sentence_issues[0] = False
-        self.complexity_recommendations[0] = ""
+    sentences = self.text_box.get("1.0", "end-1c").split(".")
+    sentence_warnings = [False, False, False, False]
+    self.complexity_recommendations = []
+    x = 0
 
-    self.word_count = len(self.text_box.get("1.0", "end-1c").split())
-    if self.word_count > self.leaflet_master.word_count:
-        self.sentence_issues[1] = True
-        self.complexity_recommendations[1] = "Current word count is: " + str(
-            self.word_count) + "\nTry keep it below " + str(self.leaflet_master.word_count) + " words.\n"
-    elif self.word_count < self.leaflet_master.word_count:
-        self.sentence_issues[1] = False
-        self.complexity_recommendations[1] = ""
+    for sentence in sentences:
+        x = x+1
+        recommendation_text = "Recommendations for sentence " + str(x) + ":\n"
 
-    self.polarity = TextBlob(self.text_box.get("1.0", "end-1c")).sentiment.polarity
-    if self.polarity < self.leaflet_master.polarity:
-        self.sentence_issues[2] = True
-        self.complexity_recommendations[2] = "Current sentiment rating (how positive your sentence is) is: " + str(
-            round(self.polarity, 2)) + "\nTry keep it above " + str(self.leaflet_master.polarity) + "\n"
-    elif self.polarity > self.leaflet_master.polarity:
-        self.sentence_issues[2] = False
-        self.complexity_recommendations[2] = ""
+        self.reading_level = textstat.flesch_reading_ease(sentence)
+        if self.reading_level < self.leaflet_master.reading_level:
+            self.sentence_issues[0] = True
+            sentence_warnings[0] = True
+            recommendation_text += "Reading level is: " + str(
+                round(self.reading_level)) + "\nTry keep it above " + str(self.leaflet_master.reading_level) + "\n \n"
+        elif self.reading_level > self.leaflet_master.reading_level and sentence_warnings[0] is False:
+            self.sentence_issues[0] = False
 
-    self.grammatical_detection = check_for_complex_grammar(self, self.text_box.get("1.0", "end-1c").split())
-    if self.grammatical_detection != "":
-        self.sentence_issues[3] = True
-        self.complexity_recommendations[3] = "You have used a complex grammatical word: " + self.grammatical_detection + "\n" + "Try splitting this sentence into 2 instead.\n"
-    else:
-        self.sentence_issues[3] = False
-        self.complexity_recommendations[3] = ""
+        self.word_count = len(sentence.split())
+        if self.word_count > self.leaflet_master.word_count:
+            self.sentence_issues[1] = True
+            sentence_warnings[1] = True
+            recommendation_text += "Current word count is: " + str(
+                self.word_count) + "\nTry keep it below " + str(self.leaflet_master.word_count) + " words.\n \n"
+        elif self.word_count < self.leaflet_master.word_count and sentence_warnings[1] is False:
+            self.sentence_issues[1] = False
 
-    update_complexity(self)
+        self.polarity = TextBlob(sentence).sentiment.polarity
+        if self.polarity < self.leaflet_master.polarity:
+            self.sentence_issues[2] = True
+            sentence_warnings[2] = True
+            recommendation_text += "Current sentiment rating (Positivity rating) is: " + str(
+                round(self.polarity, 2)) + "\nTry keep it above " + str(self.leaflet_master.polarity) + "\n \n"
+        elif self.polarity > self.leaflet_master.polarity and sentence_warnings[2] is False:
+            self.sentence_issues[2] = False
+
+        self.grammatical_detection = check_for_complex_grammar(self, sentence.split())
+        if self.grammatical_detection != "":
+            self.sentence_issues[3] = True
+            sentence_warnings[3] = True
+            recommendation_text += "You have used a complex grammatical word: " + self.grammatical_detection + "\n" + "Try splitting this sentence into 2 instead.\n \n"
+        elif sentence_warnings[3] is False:
+            self.sentence_issues[3] = False
+
+        if recommendation_text == "Recommendations for sentence " + str(x) + ":\n":
+            recommendation_text = ""
+        self.complexity_recommendations.append(recommendation_text)
+        update_complexity(self)
 
 
 def update_complexity(self):
