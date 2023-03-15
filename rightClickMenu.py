@@ -66,6 +66,7 @@ def word_right_click(self, event):
     word_menu = tk.Menu(self.master, tearoff=0)
     word_menu.add_command(label="Copy", command=lambda: copy_word(self))
     word_menu.add_command(label="Paste", command=lambda: paste_word(self))
+    word_menu.add_command(label="Bold", command=lambda: bold_word(self))
     is_wrong = False
     is_uncommon = False
 
@@ -149,3 +150,13 @@ def copy_word(self):
 
 def paste_word(self):
     self.text_box.insert(tk.INSERT, self.text_box.clipboard_get())
+
+
+def bold_word(self):
+    ranges = self.text_box.tag_ranges("bold")
+    mark = self.text_box.index("sel.first")
+    if str(mark) in str(ranges):
+        self.text_box.tag_remove("bold", "sel.first", "sel.last")
+    else:
+        self.text_box.tag_add("bold", "sel.first", "sel.last")
+        self.text_box.tag_config("bold", font=("Arial", 16, "bold"))
