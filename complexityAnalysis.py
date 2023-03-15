@@ -30,7 +30,7 @@ def check_sentence(self):
 
     for sentence in sentences:
         x = x+1
-        recommendation_text = "Recommendations for sentence " + str(x) + ":\n"
+        recommendation_text = "Recommendations for sentence " + str(x) + ":\n \n"
 
         self.reading_level = textstat.flesch_reading_ease(sentence)
         if self.reading_level < self.leaflet_master.reading_level:
