@@ -34,6 +34,13 @@ def create_document(title, all_rows, folder_selected, font_style, font_size, wat
             text = row_cells[1].paragraphs[0]
             run = image.add_run()
             run.add_picture(row[0], width=Inches(1.80), height=Inches(1.80))
+            sentence = row.split()
+            for word in sentence:
+
+                if word:
+                    text.add_run(word).bold = True
+                else:
+                    text.add_run(word)
             text.add_run(row[1])
 
     document.save(folder_selected + "/" + title + '.docx')

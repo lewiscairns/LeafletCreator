@@ -113,7 +113,7 @@ class LeafletPage(tk.Frame):
         self.row3 = PageRow(self, 5, master)
         self.row4 = PageRow(self, 6, master)
 
-    def add_row(self, label, text):
+    def add_row(self, label, text, bold_words):
         image = Image.open(label)
         resize_image = image.resize((150, 150))
         photo = ImageTk.PhotoImage(resize_image)
@@ -122,24 +122,28 @@ class LeafletPage(tk.Frame):
             self.row1.label_image.image = photo
             self.row1.text_box.insert(tk.END, text)
             self.row1.filename = label
+            self.row1.bold_words = bold_words
             self.row1.built = True
         elif not self.row2.built:
             self.row2.label_image.configure(image=photo)
             self.row2.label_image.image = photo
             self.row2.text_box.insert(tk.END, text)
             self.row2.filename = label
+            self.row2.bold_words = bold_words
             self.row2.built = True
         elif not self.row3.built:
             self.row3.label_image.configure(image=photo)
             self.row3.label_image.image = photo
             self.row3.text_box.insert(tk.END, text)
             self.row3.filename = label
+            self.row3.bold_words = bold_words
             self.row3.built = True
         elif not self.row4.built:
             self.row4.label_image.configure(image=photo)
             self.row4.label_image.image = photo
             self.row4.text_box.insert(tk.END, text)
             self.row4.filename = label
+            self.row4.bold_words = bold_words
             self.row4.built = True
         else:
             print("Error: No more rows available")
@@ -194,9 +198,10 @@ class PageRow:
         self.misspelled_tag = []
         self.text = ""
         self.num_spaces = 0
+        self.bold_words = []
 
     def get_row(self):
-        return self.filename, self.text_box
+        return self.filename, self.text_box, self.bold_words
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))

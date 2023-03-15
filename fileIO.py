@@ -29,8 +29,8 @@ def saving(self):
         for page in self.pages:
             page_text = []
             for row in page.row1, page.row2, page.row3, page.row4:
-                label, text = row.get_row()
-                page_text.append([label, self.retrieve_input(text)])
+                label, text, bold_words = row.get_row()
+                page_text.append([label, self.retrieve_input(text), bold_words])
             pages_text.append(page_text)
         data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level,
                 self.ignore_words, self.polarity, self.watermark_text,
@@ -63,7 +63,7 @@ def load(self, master, master_page):
                 self.page_counter += 1
                 self.pages.append(master_page(self))
                 for row in page:
-                    self.pages[self.page_counter-1].add_row(row[0], row[1])
+                    self.pages[self.page_counter-1].add_row(row[0], row[1], row[2])
     except Exception as e:
         print("Error: " + str(e))
     self.current_page = 0

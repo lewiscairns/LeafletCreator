@@ -160,3 +160,4 @@ def bold_word(self):
     else:
         self.text_box.tag_add("bold", "sel.first", "sel.last")
         self.text_box.tag_config("bold", font=("Arial", 16, "bold"))
+        self.bold_words.append(self.text_box.index("sel.first"))
