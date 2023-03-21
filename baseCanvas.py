@@ -83,7 +83,7 @@ class LeafletCreator(tk.Tk):
         self.font_size = 18
         self.watermark_image = "images/WikiWatermark.png"
         self.watermark_text = ""
-        self.complex_grammar_list = ["might", "an", "because"]
+        self.complex_grammar_list = ["Might", "Would", "Should", "Negatives", "If", "Then", "While", "Because", "Why", "Since", "Although", "Though", "So", "Before", "After", "Until", "Whether", "When"]
 
         self.lift()
 
