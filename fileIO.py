@@ -1,5 +1,6 @@
 import pickle as lc
 import tkinter as tk
+from os.path import expanduser
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
@@ -9,7 +10,7 @@ import rightClickMenu
 
 def save_as(self):
     try:
-        self.saved_folder = fd.askdirectory(title="Select Folder To Generate File")
+        self.saved_folder = fd.askdirectory(title="Select Folder To Generate File", initialdir=expanduser('~/Documents'))
         saving(self)
         tk.messagebox.showinfo("Success", "Your document has been saved")
     except Exception as e:
@@ -18,6 +19,8 @@ def save_as(self):
 
 def save(self):
     try:
+        if self.saved_folder == "":
+            save_as(self)
         saving(self)
     except Exception as e:
         print("Error: " + str(e))
