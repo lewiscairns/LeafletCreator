@@ -19,6 +19,8 @@ def save_as(self):
 
 def save(self):
     try:
+        if self.saved_folder == "":
+            save_as(self)
         saving(self)
     except Exception as e:
         print("Error: " + str(e))

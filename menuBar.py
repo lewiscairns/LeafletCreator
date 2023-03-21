@@ -1,3 +1,5 @@
+from os.path import expanduser
+
 import docxFiles
 
 import tkinter as tk
@@ -38,7 +40,10 @@ def prev_page(self):
 
 
 def generate(self):
-    folder_selected = fd.askdirectory(title="Select Folder To Generate File")
+    if self.saved_folder == "":
+        folder_selected = fd.askdirectory(title="Select Folder To Generate File", initialdir=expanduser('~/Documents'))
+    else:
+        folder_selected = fd.askdirectory(title="Select Folder To Generate File", initialdir=self.saved_folder)
     all_rows = []
     page_counter = 0
     for page in self.pages:
