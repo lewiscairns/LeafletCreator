@@ -44,7 +44,7 @@ def saving(self):
 def load(self, master, master_page):
     self.pages[self.current_page].grid_forget()
     filetypes = (('leaflet.lc', '*.lc'), ('All files', '*.*'))
-    filename = fd.askopenfilename(title='Open Leaflet', initialdir='/', filetypes=filetypes)
+    filename = fd.askopenfilename(title='Open Leaflet', initialdir=expanduser('~/Documents'), filetypes=filetypes)
     try:
         with open(filename, "rb") as file:
             data = lc.load(file)
