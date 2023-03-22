@@ -13,7 +13,7 @@ def check_spelling(self):
         self.num_spaces = current_spaces
         for word in self.text.split(' '):
             word = word.lower()
-            word_positions = [i for i in range(len(self.text)) if self.text.startswith(word, i)]
+            word_positions = [word_start for word_start in range(len(self.text)-len(word)+1) if self.text[word_start:word_start+len(word)] == word]
             suggestion = Word.spellcheck(Word(word))
             suggestion_text = suggestion[0]
             suggestion_text = str(suggestion_text).split(" ", 1)[0]
@@ -34,7 +34,7 @@ def check_spelling(self):
 
 def word_complexity_check(self):
     for word in self.text.split(' '):
-        word_positions = [i for i in range(len(self.text)) if self.text.startswith(word, i)]
+        word_positions = [word_start for word_start in range(len(self.text)-len(word)+1) if self.text[word_start:word_start+len(word)] == word]
         word = word.lower()
         word = re.sub(r'[.;:,?"!/]', '', word)
         word_parsed = self.regex.sub('', word)
