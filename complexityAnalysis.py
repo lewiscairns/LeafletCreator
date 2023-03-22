@@ -14,7 +14,7 @@ def show_complexity_recommendations(self):
     if recommendation_text == "":
         recommendation_text = "No recommendations available"
     top = tk.Toplevel(self.master)
-    top.geometry("300x250")
+    top.geometry("300x400")
     top.title("Recommendations")
     top_label = tk.Label(top, text=recommendation_text)
     top_button = tk.Button(top, text="Close", command=top.destroy)
