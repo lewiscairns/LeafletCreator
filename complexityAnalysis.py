@@ -30,7 +30,7 @@ def check_sentence(self):
 
     for sentence in sentences:
         x = x+1
-        recommendation_text = "Recommendations for sentence " + str(x) + ":\n \n"
+        recommendation_text = "Recommendations for sentence " + str(x) + " in this box:\n \n"
 
         self.reading_level = textstat.flesch_reading_ease(sentence)
         if self.reading_level < self.leaflet_master.reading_level:
@@ -38,7 +38,7 @@ def check_sentence(self):
             sentence_warnings[0] = True
             recommendation_text += "Reading level is: " + str(
                 round(self.reading_level)) + "\nTry keep it above " + str(self.leaflet_master.reading_level) + "\n \n"
-        elif self.reading_level > self.leaflet_master.reading_level and sentence_warnings[0] is False:
+        elif sentence_warnings[0] is False:
             self.sentence_issues[0] = False
 
         self.word_count = len(sentence.split())
@@ -47,7 +47,7 @@ def check_sentence(self):
             sentence_warnings[1] = True
             recommendation_text += "Current word count is: " + str(
                 self.word_count) + "\nTry keep it below " + str(self.leaflet_master.word_count) + " words.\n \n"
-        elif self.word_count < self.leaflet_master.word_count and sentence_warnings[1] is False:
+        elif sentence_warnings[1] is False:
             self.sentence_issues[1] = False
 
         self.polarity = TextBlob(sentence).sentiment.polarity
@@ -56,7 +56,7 @@ def check_sentence(self):
             sentence_warnings[2] = True
             recommendation_text += "Current sentiment rating (Positivity rating) is: " + str(
                 round(self.polarity, 2)) + "\nTry keep it above " + str(self.leaflet_master.polarity) + "\n \n"
-        elif self.polarity > self.leaflet_master.polarity and sentence_warnings[2] is False:
+        elif sentence_warnings[2] is False:
             self.sentence_issues[2] = False
 
         self.grammatical_detection = check_for_complex_grammar(self, sentence.split())
@@ -67,9 +67,8 @@ def check_sentence(self):
         elif sentence_warnings[3] is False:
             self.sentence_issues[3] = False
 
-        if recommendation_text == "Recommendations for sentence " + str(x) + ":\n":
+        if recommendation_text == "Recommendations for sentence " + str(x) + " in this box:\n \n":
             recommendation_text = ""
-        self.complexity_recommendations.append(recommendation_text)
         update_complexity(self)
 
 

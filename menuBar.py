@@ -9,10 +9,6 @@ from tkinter.simpledialog import askstring
 from PIL import Image, ImageTk
 
 
-def new_file(self):
-    pass
-
-
 def title_file(self, master):
     self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
     new_title = self.user_title + " - Leaflet Creator"

@@ -36,7 +36,7 @@ class LeafletCreator(tk.Tk):
         self.config(menu=self.menu_bar)
 
         self.file_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.file_menu.add_command(label="New", command=lambda: menuBar.new_file(self))
+        self.file_menu.add_command(label="New", command=lambda: new_file())
         self.file_menu.add_command(label="Open", command=lambda: fileIO.load(self, LeafletCreator, LeafletPage))
         self.file_menu.add_command(label="Save", command=lambda: fileIO.save(self))
         self.file_menu.add_command(label="Save As", command=lambda: fileIO.save_as(self))
