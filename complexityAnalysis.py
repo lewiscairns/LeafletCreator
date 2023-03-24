@@ -69,6 +69,7 @@ def check_sentence(self):
 
         if recommendation_text == "Recommendations for sentence " + str(x) + " in this box:\n \n":
             recommendation_text = ""
+        self.complexity_recommendations.append(recommendation_text)
         update_complexity(self)
 
 
