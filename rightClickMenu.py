@@ -24,7 +24,7 @@ def check_spelling(self):
                 self.misspelled_tag.append(position)
                 word_found = find_word_in_list(suggestion, word_parsed)
                 if suggestion_text != "n" and word_found is False and word_parsed != "\n" and word_parsed.isspace() is False and len(word_parsed) \
-                        != 1 and word not in self.leaflet_master.ignore_words:
+                        != 1 and word not in self.leaflet_master.ignore_words and word != "-":
                     self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
                 else:
                     self.text_box.tag_remove("wrong", f'1.{position}', f'1.{position + len(word)}')
@@ -39,7 +39,7 @@ def word_complexity_check(self):
         word = re.sub(r'[.;:,?"!/]', '', word)
         word_parsed = self.regex.sub('', word)
         for position in word_positions:
-            if get_word_synonym(self, word_parsed) and len(self.synonyms) == 0 and word not in self.leaflet_master.ignore_words:
+            if get_word_synonym(self, word_parsed) and len(self.synonyms) == 0 and word not in self.leaflet_master.ignore_words and word != "-":
                 self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
                 self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
                 self.misspelled_tag.append(position)
