@@ -66,7 +66,7 @@ def load(self, master, master_page):
                 self.page_counter += 1
                 self.pages.append(master_page(self))
                 for row in page:
-                    self.pages[self.page_counter-1].add_row(row[0], row[1])
+                    self.pages[self.page_counter-1].add_row(row[0], row[1], row[2])
     except Exception as e:
         print("Error: " + str(e))
     self.current_page = 0

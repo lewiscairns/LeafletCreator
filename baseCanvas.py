@@ -161,9 +161,11 @@ class PageRow:
         self.label_image.image = self.photo
         self.label_image.bind("<Button-1>", self.image_click)
 
-        self.text_box = tk.Text(master, height=9, width=52, wrap="word")
+        self.text_box = tk.Text(master, height=6, width=30, wrap="word")
+        self.text_box.configure(font=("Arial", 16))
         self.text_box.tag_configure("wrong", foreground="red", underline=True)
         self.text_box.tag_configure("uncommon", foreground="blue", underline=True)
+        self.text_box.tag_configure("bold", font=("Arial", 16, "bold"))
         self.text_box.bind("<KeyRelease>", lambda event: rightClickMenu.check_spelling(self))
         self.text_box.bind("<Key>", lambda event: complexityAnalysis.check_sentence(self))
         self.text_box.bind("<Button-3>", lambda event: rightClickMenu.word_right_click(self, event))
