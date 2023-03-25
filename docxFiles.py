@@ -1,6 +1,7 @@
 from docx import Document
 from docx.shared import Inches
 from docx.shared import Pt
+import tkinter as tk
 
 
 def create_document(title, all_rows, folder_selected, font_style, font_size, watermark_image, watermark_text):
@@ -29,18 +30,36 @@ def create_document(title, all_rows, folder_selected, font_style, font_size, wat
     for page in all_rows:
         table = document.add_table(rows=0, cols=2)
         for row in page[1:]:
+            bold_word_positions = row[1].tag_ranges("bold")
             row_cells = table.add_row().cells
             image = row_cells[0].paragraphs[0]
             text = row_cells[1].paragraphs[0]
             run = image.add_run()
             run.add_picture(row[0], width=Inches(1.80), height=Inches(1.80))
-            sentence = row.split()
+            sentence = retrieve_input(row[1])
             for word in sentence:
-
-                if word:
-                    text.add_run(word).bold = True
+                word, position = word.split("#")
+                if str(position) in str(bold_word_positions):
+                    text.add_run(str(word)).bold = True
                 else:
-                    text.add_run(word)
-            text.add_run(row[1])
+                    text.add_run(str(word))
+                text.add_run(" ")
 
     document.save(folder_selected + "/" + title + '.docx')
+
+
+def retrieve_input(text_box):
+    words = []
+    start_index = "1.0"
+    text_box.insert(tk.END, " ")
+    while True:
+        space_index = text_box.search(" ", start_index, tk.END)
+        if space_index == "":
+            break
+        word_position = space_index
+        line, column = word_position.split(".")
+        position = f"{line}.{column}"
+        word = text_box.get(start_index, space_index)
+        words.append(word + "#" + position)
+        start_index = word_position + "+1c"
+    return words

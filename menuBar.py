@@ -45,7 +45,7 @@ def generate(self):
         all_rows.append([page_counter])
         for row in page.row1, page.row2, page.row3, page.row4:
             label, text, bold_words = row.get_row()
-            all_rows[page_counter].append([label, self.retrieve_input(text), bold_words])
+            all_rows[page_counter].append([label, text, bold_words])
         page_counter = page_counter + 1
     docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size, self.watermark_image, self.watermark_text)
     tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
