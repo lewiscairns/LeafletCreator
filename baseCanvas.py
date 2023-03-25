@@ -199,10 +199,9 @@ class PageRow:
         self.misspelled_tag = []
         self.text = ""
         self.num_spaces = 0
-        self.bold_words = []
 
     def get_row(self):
-        return self.filename, self.text_box, self.bold_words
+        return self.filename, self.text_box
 
     def image_click(self, event=None):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))

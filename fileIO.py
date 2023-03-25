@@ -29,8 +29,8 @@ def saving(self):
         for page in self.pages:
             page_text = []
             for row in page.row1, page.row2, page.row3, page.row4:
-                label, text, bold_words = row.get_row()
-                page_text.append([label, self.retrieve_input(text), bold_words])
+                label, text = row.get_row()
+                page_text.append([label, self.retrieve_input(text)])
             pages_text.append(page_text)
         data = [self.user_title, self.font_size, self.font_style, self.word_count, self.reading_level,
                 self.ignore_words, self.polarity, self.watermark_text,

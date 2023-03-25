@@ -157,9 +157,5 @@ def bold_word(self):
     mark = self.text_box.index("sel.first")
     if str(mark) in str(ranges):
         self.text_box.tag_remove("bold", "sel.first", "sel.last")
-        for marks in self.bold_words:
-            if str(mark) == str(marks):
-                self.bold_words.remove(marks)
     else:
         self.text_box.tag_add("bold", "sel.first", "sel.last")
-        self.bold_words.append(self.text_box.index("sel.first"))
