@@ -6,6 +6,7 @@ import menuBar
 import complexityAnalysis
 import rightClickMenu
 
+import customtkinter as ct
 import tkinter as tk
 from tkinter import filedialog as fd
 
@@ -99,13 +100,14 @@ class LeafletCreator(tk.Tk):
 class LeafletPage(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.prev_button = tk.Button(self, text="Previous", command=lambda: menuBar.next_page(master), cursor="hand2")
+        self.prev_button = ct.CTkButton(self, fg_color="white", hover_color="lightgray", text_color="black", text="Previous", command=lambda: menuBar.next_page(master), cursor="hand2")
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
         self.page_title = tk.Label(self, text="Page " + str(master.page_counter))
+        self.page_title.configure(font=("Arial", 16, "bold"))
         self.page_title.grid(row=1, column=1, padx=30, pady=10)
 
-        self.next_button = tk.Button(self, text="Next", command=lambda: menuBar.prev_page(master), cursor="hand2")
+        self.next_button = ct.CTkButton(self, fg_color="white", hover_color="lightgray", text_color="black", text="Next", command=lambda: menuBar.prev_page(master), cursor="hand2")
         self.next_button.grid(row=1, column=2, padx=30, pady=10)
 
         self.row1 = PageRow(self, 3, master)
