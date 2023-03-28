@@ -56,7 +56,7 @@ class ChangeFont:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x200")
+        self.top.geometry("150x200")
         self.top.title("Font Style")
         self.top_label = tk.Label(self.top, text="The current style is: " + self.master.font_style)
         self.arial_button = tk.Button(self.top, text="Arial", command=self.arial)
@@ -94,7 +94,7 @@ class ChangeFontSize:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("180x80")
         self.top.title("Font Size")
         self.top_label = tk.Label(self.top, text="Recommended Font Size is 18")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_font_size)
@@ -104,11 +104,11 @@ class ChangeFontSize:
         self.top_entry = tk.Entry(self.top, textvariable=self.top_font_size)
         self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label.grid(row=0, column=0, columnspan=3)
         self.top_button_up.grid(row=1, column=0)
         self.top_entry.grid(row=1, column=1)
         self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
+        self.top_button.grid(row=2, column=1)
 
     def increase_font_size(self):
         if self.master.font_size == 24:
@@ -129,7 +129,7 @@ class ChangeReading:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("220x80")
         self.top.title("Reading Level")
         self.top_label = tk.Label(self.top, text="Recommended Reading Level is 90")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_reading_level)
@@ -139,11 +139,11 @@ class ChangeReading:
         self.top_entry = tk.Entry(self.top, textvariable=self.top_reading_level)
         self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label.grid(row=0, column=0, columnspan=3)
         self.top_button_up.grid(row=1, column=0)
         self.top_entry.grid(row=1, column=1)
         self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
+        self.top_button.grid(row=2, column=1)
 
     def increase_reading_level(self):
         if self.master.reading_level == 120:
@@ -164,7 +164,7 @@ class ChangeWordCount:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("220x80")
         self.top.title("Word Count")
         self.top_label = tk.Label(self.top, text="Recommended Word Count is 15")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_word_count)
@@ -174,11 +174,11 @@ class ChangeWordCount:
         self.top_entry = tk.Entry(self.top, textvariable=self.top_word_count)
         self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label.grid(row=0, column=0, columnspan=3)
         self.top_button_up.grid(row=1, column=0)
         self.top_entry.grid(row=1, column=1)
         self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
+        self.top_button.grid(row=2, column=1)
 
     def increase_word_count(self):
         if self.master.word_count == 25:
@@ -199,7 +199,7 @@ class ChangeSentiment:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("300x100")
         self.top.title("Sentiment Rating")
         self.top_label = tk.Label(self.top, text="Recommended Sentiment Rating is 0")
         self.top_label2 = tk.Label(self.top, text="Most positive rating is 1, most negative rating is -1")
@@ -210,12 +210,12 @@ class ChangeSentiment:
         self.top_entry = tk.Entry(self.top, textvariable=self.top_polarity)
         self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_label2.grid(row=1, column=0, columnspan=2)
+        self.top_label.grid(row=0, column=0, columnspan=3)
+        self.top_label2.grid(row=1, column=0, columnspan=3)
         self.top_button_up.grid(row=2, column=0)
         self.top_entry.grid(row=2, column=1)
         self.top_button_down.grid(row=2, column=2)
-        self.top_button.grid(row=3, column=0, columnspan=2)
+        self.top_button.grid(row=3, column=1)
 
     def increase_polarity_limit(self):
         if self.master.polarity == 1:
@@ -237,7 +237,7 @@ class Footer:
         self.master = master
         self.watermark_image = self.master.watermark_image
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("220x150")
         self.top.title("Footer")
         self.top_label = tk.Label(self.top, text="Please enter watermark text and image")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
