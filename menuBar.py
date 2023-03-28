@@ -10,7 +10,7 @@ from PIL import Image, ImageTk
 
 
 def title_file(self, master):
-    self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
+    self.user_title = tk.simpledialog.askstring(" ", "Please enter a title for this file.")
     new_title = self.user_title + " - Leaflet Creator"
     master.title(self, new_title)
 
@@ -45,22 +45,18 @@ def generate(self):
     for page in self.pages:
         all_rows.append([page_counter])
         for row in page.row1, page.row2, page.row3, page.row4:
-            label, text= row.get_row()
+            label, text = row.get_row()
             all_rows[page_counter].append([label, text])
         page_counter = page_counter + 1
     docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size, self.watermark_image, self.watermark_text)
     tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
 
 
-def move_page(self):
-    pass
-
-
 class ChangeFont:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x200")
+        self.top.geometry("150x200")
         self.top.title("Font Style")
         self.top_label = tk.Label(self.top, text="The current style is: " + self.master.font_style)
         self.arial_button = tk.Button(self.top, text="Arial", command=self.arial)
@@ -98,7 +94,7 @@ class ChangeFontSize:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("180x80")
         self.top.title("Font Size")
         self.top_label = tk.Label(self.top, text="Recommended Font Size is 18")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_font_size)
@@ -108,11 +104,11 @@ class ChangeFontSize:
         self.top_entry = tk.Entry(self.top, textvariable=self.top_font_size)
         self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label.grid(row=0, column=0, columnspan=3)
         self.top_button_up.grid(row=1, column=0)
         self.top_entry.grid(row=1, column=1)
         self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
+        self.top_button.grid(row=2, column=1)
 
     def increase_font_size(self):
         if self.master.font_size == 24:
@@ -133,7 +129,7 @@ class ChangeReading:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("220x80")
         self.top.title("Reading Level")
         self.top_label = tk.Label(self.top, text="Recommended Reading Level is 90")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_reading_level)
@@ -143,11 +139,11 @@ class ChangeReading:
         self.top_entry = tk.Entry(self.top, textvariable=self.top_reading_level)
         self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label.grid(row=0, column=0, columnspan=3)
         self.top_button_up.grid(row=1, column=0)
         self.top_entry.grid(row=1, column=1)
         self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
+        self.top_button.grid(row=2, column=1)
 
     def increase_reading_level(self):
         if self.master.reading_level == 120:
@@ -168,7 +164,7 @@ class ChangeWordCount:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("220x80")
         self.top.title("Word Count")
         self.top_label = tk.Label(self.top, text="Recommended Word Count is 15")
         self.top_button_up = tk.Button(self.top, text="+", command=self.increase_word_count)
@@ -178,11 +174,11 @@ class ChangeWordCount:
         self.top_entry = tk.Entry(self.top, textvariable=self.top_word_count)
         self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
+        self.top_label.grid(row=0, column=0, columnspan=3)
         self.top_button_up.grid(row=1, column=0)
         self.top_entry.grid(row=1, column=1)
         self.top_button_down.grid(row=1, column=2)
-        self.top_button.grid(row=2, column=0, columnspan=2)
+        self.top_button.grid(row=2, column=1)
 
     def increase_word_count(self):
         if self.master.word_count == 25:
@@ -203,7 +199,7 @@ class ChangeSentiment:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("300x100")
         self.top.title("Sentiment Rating")
         self.top_label = tk.Label(self.top, text="Recommended Sentiment Rating is 0")
         self.top_label2 = tk.Label(self.top, text="Most positive rating is 1, most negative rating is -1")
@@ -214,12 +210,12 @@ class ChangeSentiment:
         self.top_entry = tk.Entry(self.top, textvariable=self.top_polarity)
         self.top_entry.configure(state="readonly")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
-        self.top_label.grid(row=0, column=0, columnspan=2)
-        self.top_label2.grid(row=1, column=0, columnspan=2)
+        self.top_label.grid(row=0, column=0, columnspan=3)
+        self.top_label2.grid(row=1, column=0, columnspan=3)
         self.top_button_up.grid(row=2, column=0)
         self.top_entry.grid(row=2, column=1)
         self.top_button_down.grid(row=2, column=2)
-        self.top_button.grid(row=3, column=0, columnspan=2)
+        self.top_button.grid(row=3, column=1)
 
     def increase_polarity_limit(self):
         if self.master.polarity == 1:
@@ -241,7 +237,7 @@ class Footer:
         self.master = master
         self.watermark_image = self.master.watermark_image
         self.top = tk.Toplevel(master)
-        self.top.geometry("300x150")
+        self.top.geometry("220x150")
         self.top.title("Footer")
         self.top_label = tk.Label(self.top, text="Please enter watermark text and image")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
@@ -283,7 +279,7 @@ class WhatEasyRead:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("500x300")
+        self.top.geometry("600x300")
         self.top.title("What is Easy Read?")
         self.top_label = tk.Label(self.top, text="Focus on key message")
         self.top_label2 = tk.Label(self.top, text="Find the key message that is being conveyed, \n removing the information that isn’t useful to this key message.\n")
@@ -292,6 +288,12 @@ class WhatEasyRead:
         self.top_label5 = tk.Label(self.top, text="Make sure it is Easy to Read")
         self.top_label6 = tk.Label(self.top, text="Ensure jargon and acronyms are explained or removed, \n and test your content on people with learning disabilities.\n")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.configure(font=("Arial", 12, "bold"))
+        self.top_label2.configure(font=("Arial", 12))
+        self.top_label3.configure(font=("Arial", 12, "bold"))
+        self.top_label4.configure(font=("Arial", 12))
+        self.top_label5.configure(font=("Arial", 12, "bold"))
+        self.top_label6.configure(font=("Arial", 12))
         self.top_label.grid(row=0, column=0, columnspan=2)
         self.top_label2.grid(row=1, column=0, columnspan=2)
         self.top_label3.grid(row=2, column=0, columnspan=2)
@@ -305,7 +307,7 @@ class EnglishEasyRead:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("600x500")
+        self.top.geometry("680x465")
         self.top.title("English EasyRead")
         self.top_label = tk.Label(self.top, text="Keep information clear")
         self.top_label2 = tk.Label(self.top, text="Write information in a logical order, as if you were speaking it to the \n reader, and in sentences that aren’t too long, with 15 words being a good limit.\n")
@@ -318,6 +320,16 @@ class EnglishEasyRead:
         self.top_label9 = tk.Label(self.top, text="Avoid percentages and numerals")
         self.top_label10 = tk.Label(self.top, text="Using generalized words such as “Most” instead of exact percentages and words \n over numerals such as “three” instead of “3” makes your document easier to understand.\n")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.configure(font=("Arial", 12, "bold"))
+        self.top_label2.configure(font=("Arial", 12))
+        self.top_label3.configure(font=("Arial", 12, "bold"))
+        self.top_label4.configure(font=("Arial", 12))
+        self.top_label5.configure(font=("Arial", 12, "bold"))
+        self.top_label6.configure(font=("Arial", 12))
+        self.top_label7.configure(font=("Arial", 12, "bold"))
+        self.top_label8.configure(font=("Arial", 12))
+        self.top_label9.configure(font=("Arial", 12, "bold"))
+        self.top_label10.configure(font=("Arial", 12))
         self.top_label.grid(row=0, column=0, columnspan=2)
         self.top_label2.grid(row=1, column=0, columnspan=2)
         self.top_label3.grid(row=2, column=0, columnspan=2)
@@ -335,7 +347,7 @@ class ContentEasyRead:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("600x200")
+        self.top.geometry("750x230")
         self.top.title("Content EasyRead")
         self.top_label = tk.Label(self.top, text="Try not to confuse the reader")
         self.top_label2 = tk.Label(self.top, text="Writing in facts is better than metaphors, as metaphors can confuse the reader instead of helping \n the reader, being simple and direct while keeping ideas or actions to one sentence is best.")
@@ -344,6 +356,12 @@ class ContentEasyRead:
         self.top_label5 = tk.Label(self.top, text="Use bold when needed")
         self.top_label6 = tk.Label(self.top, text="To highlight import words, bold can be used, but remember that not everyone will notice this.")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.configure(font=("Arial", 12, "bold"))
+        self.top_label2.configure(font=("Arial", 12))
+        self.top_label3.configure(font=("Arial", 12, "bold"))
+        self.top_label4.configure(font=("Arial", 12))
+        self.top_label5.configure(font=("Arial", 12, "bold"))
+        self.top_label6.configure(font=("Arial", 12))
         self.top_label.grid(row=0, column=0, columnspan=2)
         self.top_label2.grid(row=1, column=0, columnspan=2)
         self.top_label3.grid(row=2, column=0, columnspan=2)
@@ -357,7 +375,7 @@ class DoEasyRead:
     def __init__(self, master):
         self.master = master
         self.top = tk.Toplevel(master)
-        self.top.geometry("450x500")
+        self.top.geometry("550x600")
         self.top.title("Do EasyRead")
         self.top_label = tk.Label(self.top, text="Words are useful for:")
         self.top_label2 = tk.Label(self.top, text="o  Explaining in detail \no  Giving lots of information \no  Ensure there is as little mis-understanding as possible \n")
@@ -368,6 +386,14 @@ class DoEasyRead:
         self.top_label7 = tk.Label(self.top, text="Try using:")
         self.top_label8 = tk.Label(self.top, text="o  “Do not”, “can not”, and “would not” over “don’t”, “can’t”, “won’t” as \n some readers may require the word not in the sentence to understand it \no  The word for “percent” or “pound” over “%” and “£” \no  Pictures that support the text, not take away from it \no  Pictures that are clear and easy to understand \no  Pictures that are not too busy \n")
         self.top_button = tk.Button(self.top, text="Close", command=self.top.destroy)
+        self.top_label.configure(font=("Arial", 12, "bold"))
+        self.top_label2.configure(font=("Arial", 12))
+        self.top_label3.configure(font=("Arial", 12, "bold"))
+        self.top_label4.configure(font=("Arial", 12))
+        self.top_label5.configure(font=("Arial", 12, "bold"))
+        self.top_label6.configure(font=("Arial", 12))
+        self.top_label7.configure(font=("Arial", 12, "bold"))
+        self.top_label8.configure(font=("Arial", 12))
         self.top_label.grid(row=0, column=0, columnspan=2)
         self.top_label2.grid(row=1, column=0, columnspan=2)
         self.top_label3.grid(row=2, column=0, columnspan=2)

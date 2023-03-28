@@ -6,6 +6,7 @@ import menuBar
 import complexityAnalysis
 import rightClickMenu
 
+import customtkinter as ct
 import tkinter as tk
 from tkinter import filedialog as fd
 
@@ -47,24 +48,20 @@ class LeafletCreator(tk.Tk):
 
         self.page_menu = tk.Menu(self.menu_bar, tearoff=False)
         self.page_menu.add_command(label="New Page", command=lambda: menuBar.create_page(self, LeafletPage))
-        self.page_menu.add_command(label="Move Page", command=lambda: menuBar.move_page(self))
         self.menu_bar.add_cascade(label="Page", menu=self.page_menu)
 
-        self.generate_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.generate_menu.add_command(label="Generate", command=lambda: menuBar.generate(self))
-        self.menu_bar.add_cascade(label="Generate", menu=self.generate_menu)
-
-        self.footer_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.footer_menu.add_command(label="Edit Footer", command=lambda: menuBar.Footer(self))
-        self.menu_bar.add_cascade(label="Footer", menu=self.footer_menu)
+        self.document_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.document_menu.add_command(label="Generate", command=lambda: menuBar.generate(self))
+        self.document_menu.add_command(label="Edit Footer", command=lambda: menuBar.Footer(self))
+        self.document_menu.add_separator()
+        self.document_menu.add_command(label="Document Font Style", command=lambda: menuBar.ChangeFont(self))
+        self.document_menu.add_command(label="Document Font Size", command=lambda: menuBar.ChangeFontSize(self))
+        self.menu_bar.add_cascade(label="Document", menu=self.document_menu)
 
         self.settings_menu = tk.Menu(self.menu_bar, tearoff=False)
         self.settings_menu.add_command(label="Reading Level", command=lambda: menuBar.ChangeReading(self))
         self.settings_menu.add_command(label="Word Count", command=lambda: menuBar.ChangeWordCount(self))
         self.settings_menu.add_command(label="Sentiment Rating", command=lambda: menuBar.ChangeSentiment(self))
-        self.settings_menu.add_separator()
-        self.settings_menu.add_command(label="Document Font Style", command=lambda: menuBar.ChangeFont(self))
-        self.settings_menu.add_command(label="Document Font Size", command=lambda: menuBar.ChangeFontSize(self))
         self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
 
         self.easy_read_advice = tk.Menu(self.menu_bar, tearoff=False)
@@ -72,7 +69,7 @@ class LeafletCreator(tk.Tk):
         self.easy_read_advice.add_command(label="English into Easy Read", command=lambda: menuBar.EnglishEasyRead(self))
         self.easy_read_advice.add_command(label="Style of Easy Read content", command=lambda: menuBar.ContentEasyRead(self))
         self.easy_read_advice.add_command(label="Do's and Don'ts", command=lambda: menuBar.DoEasyRead(self))
-        self.menu_bar.add_cascade(label="Easy Read Advice", menu=self.easy_read_advice)
+        self.menu_bar.add_cascade(label="Easy Read Information", menu=self.easy_read_advice)
 
         self.reading_level = 90
         self.word_count = 15
@@ -99,13 +96,14 @@ class LeafletCreator(tk.Tk):
 class LeafletPage(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.prev_button = tk.Button(self, text="Previous", command=lambda: menuBar.next_page(master), cursor="hand2")
+        self.prev_button = ct.CTkButton(self, fg_color="white", hover_color="lightgray", text_color="black", font=("Arial", 14, "bold"), text="Previous", command=lambda: menuBar.next_page(master), cursor="hand2")
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
         self.page_title = tk.Label(self, text="Page " + str(master.page_counter))
+        self.page_title.configure(font=("Arial", 16, "bold"))
         self.page_title.grid(row=1, column=1, padx=30, pady=10)
 
-        self.next_button = tk.Button(self, text="Next", command=lambda: menuBar.prev_page(master), cursor="hand2")
+        self.next_button = ct.CTkButton(self, fg_color="white", hover_color="lightgray", text_color="black", font=("Arial", 14, "bold"), text="Next", command=lambda: menuBar.prev_page(master), cursor="hand2")
         self.next_button.grid(row=1, column=2, padx=30, pady=10)
 
         self.row1 = PageRow(self, 3, master)
@@ -115,7 +113,7 @@ class LeafletPage(tk.Frame):
 
     def add_row(self, label, text):
         image = Image.open(label)
-        resize_image = image.resize((150, 150))
+        resize_image = image.resize((148, 148))
         photo = ImageTk.PhotoImage(resize_image)
         if not self.row1.built:
             self.row1.label_image.configure(image=photo)
@@ -155,7 +153,7 @@ class PageRow:
 
         self.filename = "images/WikiNoImage.png"
         self.image = Image.open(self.filename)
-        self.resize_image = self.image.resize((150, 150))
+        self.resize_image = self.image.resize((148, 148))
         self.photo = ImageTk.PhotoImage(self.resize_image)
         self.label_image = tk.Label(master, image=self.photo, cursor="hand2")
         self.label_image.image = self.photo
@@ -204,7 +202,7 @@ class PageRow:
         self.filename = fd.askopenfilename(title='Open Images', initialdir='C:/Program Files/LeafletCreator/Images',
                                            filetypes=filetypes)
         self.image = Image.open(self.filename)
-        self.resize_image = self.image.resize((150, 150))
+        self.resize_image = self.image.resize((148, 148))
         self.photo = ImageTk.PhotoImage(self.resize_image)
         self.label_image.configure(image=self.photo)
         self.label_image.image = self.photo
