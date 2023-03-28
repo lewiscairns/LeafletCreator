@@ -100,14 +100,14 @@ class LeafletCreator(tk.Tk):
 class LeafletPage(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.prev_button = ct.CTkButton(self, fg_color="white", hover_color="lightgray", text_color="black", text="Previous", command=lambda: menuBar.next_page(master), cursor="hand2")
+        self.prev_button = ct.CTkButton(self, fg_color="white", hover_color="lightgray", text_color="black", font=("Arial", 14, "bold"), text="Previous", command=lambda: menuBar.next_page(master), cursor="hand2")
         self.prev_button.grid(row=1, column=0, padx=30, pady=10)
 
         self.page_title = tk.Label(self, text="Page " + str(master.page_counter))
         self.page_title.configure(font=("Arial", 16, "bold"))
         self.page_title.grid(row=1, column=1, padx=30, pady=10)
 
-        self.next_button = ct.CTkButton(self, fg_color="white", hover_color="lightgray", text_color="black", text="Next", command=lambda: menuBar.prev_page(master), cursor="hand2")
+        self.next_button = ct.CTkButton(self, fg_color="white", hover_color="lightgray", text_color="black", font=("Arial", 14, "bold"), text="Next", command=lambda: menuBar.prev_page(master), cursor="hand2")
         self.next_button.grid(row=1, column=2, padx=30, pady=10)
 
         self.row1 = PageRow(self, 3, master)
@@ -117,7 +117,7 @@ class LeafletPage(tk.Frame):
 
     def add_row(self, label, text):
         image = Image.open(label)
-        resize_image = image.resize((150, 150))
+        resize_image = image.resize((148, 148))
         photo = ImageTk.PhotoImage(resize_image)
         if not self.row1.built:
             self.row1.label_image.configure(image=photo)
@@ -157,7 +157,7 @@ class PageRow:
 
         self.filename = "images/WikiNoImage.png"
         self.image = Image.open(self.filename)
-        self.resize_image = self.image.resize((150, 150))
+        self.resize_image = self.image.resize((148, 148))
         self.photo = ImageTk.PhotoImage(self.resize_image)
         self.label_image = tk.Label(master, image=self.photo, cursor="hand2")
         self.label_image.image = self.photo
@@ -206,7 +206,7 @@ class PageRow:
         self.filename = fd.askopenfilename(title='Open Images', initialdir='C:/Program Files/LeafletCreator/Images',
                                            filetypes=filetypes)
         self.image = Image.open(self.filename)
-        self.resize_image = self.image.resize((150, 150))
+        self.resize_image = self.image.resize((148, 148))
         self.photo = ImageTk.PhotoImage(self.resize_image)
         self.label_image.configure(image=self.photo)
         self.label_image.image = self.photo

@@ -10,7 +10,7 @@ from PIL import Image, ImageTk
 
 
 def title_file(self, master):
-    self.user_title = tk.simpledialog.askstring("File Name", "Please enter a title for this file")
+    self.user_title = tk.simpledialog.askstring(" ", "Please enter a title for this file.")
     new_title = self.user_title + " - Leaflet Creator"
     master.title(self, new_title)
 
