@@ -69,7 +69,7 @@ class LeafletCreator(tk.Tk):
         self.easy_read_advice.add_command(label="English into Easy Read", command=lambda: menuBar.EnglishEasyRead(self))
         self.easy_read_advice.add_command(label="Style of Easy Read content", command=lambda: menuBar.ContentEasyRead(self))
         self.easy_read_advice.add_command(label="Do's and Don'ts", command=lambda: menuBar.DoEasyRead(self))
-        self.menu_bar.add_cascade(label="Easy Read Advice", menu=self.easy_read_advice)
+        self.menu_bar.add_cascade(label="Easy Read Information", menu=self.easy_read_advice)
 
         self.reading_level = 90
         self.word_count = 15
