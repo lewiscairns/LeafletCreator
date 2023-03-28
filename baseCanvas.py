@@ -48,24 +48,20 @@ class LeafletCreator(tk.Tk):
 
         self.page_menu = tk.Menu(self.menu_bar, tearoff=False)
         self.page_menu.add_command(label="New Page", command=lambda: menuBar.create_page(self, LeafletPage))
-        self.page_menu.add_command(label="Move Page", command=lambda: menuBar.move_page(self))
         self.menu_bar.add_cascade(label="Page", menu=self.page_menu)
 
-        self.generate_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.generate_menu.add_command(label="Generate", command=lambda: menuBar.generate(self))
-        self.menu_bar.add_cascade(label="Generate", menu=self.generate_menu)
-
-        self.footer_menu = tk.Menu(self.menu_bar, tearoff=False)
-        self.footer_menu.add_command(label="Edit Footer", command=lambda: menuBar.Footer(self))
-        self.menu_bar.add_cascade(label="Footer", menu=self.footer_menu)
+        self.document_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.document_menu.add_command(label="Generate", command=lambda: menuBar.generate(self))
+        self.document_menu.add_command(label="Edit Footer", command=lambda: menuBar.Footer(self))
+        self.document_menu.add_separator()
+        self.document_menu.add_command(label="Document Font Style", command=lambda: menuBar.ChangeFont(self))
+        self.document_menu.add_command(label="Document Font Size", command=lambda: menuBar.ChangeFontSize(self))
+        self.menu_bar.add_cascade(label="Document", menu=self.document_menu)
 
         self.settings_menu = tk.Menu(self.menu_bar, tearoff=False)
         self.settings_menu.add_command(label="Reading Level", command=lambda: menuBar.ChangeReading(self))
         self.settings_menu.add_command(label="Word Count", command=lambda: menuBar.ChangeWordCount(self))
         self.settings_menu.add_command(label="Sentiment Rating", command=lambda: menuBar.ChangeSentiment(self))
-        self.settings_menu.add_separator()
-        self.settings_menu.add_command(label="Document Font Style", command=lambda: menuBar.ChangeFont(self))
-        self.settings_menu.add_command(label="Document Font Size", command=lambda: menuBar.ChangeFontSize(self))
         self.menu_bar.add_cascade(label="Settings", menu=self.settings_menu)
 
         self.easy_read_advice = tk.Menu(self.menu_bar, tearoff=False)
