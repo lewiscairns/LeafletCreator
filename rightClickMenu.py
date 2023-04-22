@@ -1,3 +1,4 @@
+# Import necessary libraries and modules
 import tkinter as tk
 
 from textblob import Word

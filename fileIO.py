@@ -1,3 +1,4 @@
+# Import necessary libraries and modules
 import pickle as lc
 import tkinter as tk
 from os.path import expanduser

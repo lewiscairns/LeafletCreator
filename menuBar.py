@@ -1,3 +1,4 @@
+# Import necessary libraries and modules
 from os.path import expanduser
 
 import docxFiles

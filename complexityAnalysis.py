@@ -1,3 +1,4 @@
+# Import necessary libraries and modules
 import tkinter as tk
 
 import textstat
@@ -5,7 +6,7 @@ from textblob import TextBlob
 import numpy as np
 from PIL import Image, ImageTk
 
-
+#
 def show_complexity_recommendations(self):
     recommendation_text = ""
     for recommendation in self.complexity_recommendations:
