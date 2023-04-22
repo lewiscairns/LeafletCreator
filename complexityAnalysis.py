@@ -6,14 +6,19 @@ from textblob import TextBlob
 import numpy as np
 from PIL import Image, ImageTk
 
-#
+
+# This function is used to show the complexity advice of the sentences in the text box
 def show_complexity_recommendations(self):
     recommendation_text = ""
+
+    # The for loop is used to check if there are any recommendations to be made
     for recommendation in self.complexity_recommendations:
         if recommendation != "":
             recommendation_text += "\n" + recommendation
     if recommendation_text == "":
         recommendation_text = "No recommendations available"
+
+    # Creates a new window to show the recommendations
     top = tk.Toplevel(self.master)
     top.geometry("300x400")
     top.title("Recommendations")
@@ -23,16 +28,20 @@ def show_complexity_recommendations(self):
     top_button.pack()
 
 
+# This function is used to check the complexity of the sentences in the text box
 def check_sentence(self):
+    # These variables are used to store the complexity of the sentences
     sentences = self.text_box.get("1.0", "end-1c").split(".")
     sentence_warnings = [False, False, False, False]
     self.complexity_recommendations = []
     x = 0
 
+    # This for loop is used to check the complexity of each sentence
     for sentence in sentences:
         x = x+1
         recommendation_text = "Recommendations for sentence " + str(x) + " in this box:\n \n"
 
+        # Check the sentence against each rule, and if it is broken then add a recommendation and change the sentence issues array
         self.reading_level = textstat.flesch_reading_ease(sentence)
         if self.reading_level < self.leaflet_master.reading_level:
             self.sentence_issues[0] = True
@@ -74,6 +83,7 @@ def check_sentence(self):
     update_complexity(self)
 
 
+# This function is used to update the current number of issues in the sentence
 def update_complexity(self):
     if np.count_nonzero(self.sentence_issues) > 1:
         self.sentence_complexity = "Bad"
@@ -84,6 +94,7 @@ def update_complexity(self):
     update_complexity_image(self)
 
 
+# This function is used to update the complexity image of the sentences in the row
 def update_complexity_image(self):
     if self.sentence_complexity == "Good":
         self.complexity_filename = "images/WikiGreenCircle.png"
@@ -99,6 +110,7 @@ def update_complexity_image(self):
     self.complexity_icon.image = self.complexity_photo
 
 
+# This function is used to check if the sentence contains any complex grammar
 def check_for_complex_grammar(self, sentence):
     complex_grammar = ""
     for word in sentence:
