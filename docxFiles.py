@@ -59,6 +59,7 @@ def create_document(title, all_rows, folder_selected, font_style, font_size, wat
     # Save the document
     document.save(folder_selected + "/" + title + '.docx')
 
+
 # This function is used to retrieve the text from the text box
 def retrieve_input(text_box):
     words = []
@@ -86,6 +87,6 @@ def retrieve_input(text_box):
         # Add the word and its position to the list, splitting it using #
         words.append(word + "#" + position)
         start_index = word_position + "+1c"
-    
+
     # Return the list of words and their positions
     return words
