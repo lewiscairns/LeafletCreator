@@ -35,16 +35,13 @@ def saving(self):
     # Open the folder and declare the file name
     with open(self.saved_folder + "/" + self.user_title + ".lc", "wb") as file:
         pages_text = []
-
         # Open each page
         for page in self.pages:
             page_text = []
-
             # Get the text and image from each row and add it to the list
             for row in page.row1, page.row2, page.row3, page.row4:
                 label, text = row.get_row()
                 page_text.append([label, self.retrieve_input(text)])
-
             # Add the text and images to the array of all the pages
             pages_text.append(page_text)
 
