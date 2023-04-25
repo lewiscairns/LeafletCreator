@@ -58,11 +58,12 @@ def word_complexity_check(self):
 
         # Loop through each position of the word
         for position in word_positions:
-            # Give the word a wrong tag if it is not there is no synonym for it
+            # Check if the word is wrong instead of uncommon, and add an uncommon tag to it
             if get_word_synonym(self, word_parsed) and len(self.synonyms) == 0 and word not in self.leaflet_master.ignore_words and word != "-":
                 self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
                 self.text_box.tag_add("wrong", f'1.{position}', f'1.{position + len(word)}')
                 self.misspelled_tag.append(position)
+            # Check if the word is uncommon, and add an uncommon tag to it, or remove the tag if it isn't
             elif word_parsed in self.leaflet_master.common_words or word in self.leaflet_master.ignore_words or position in self.misspelled_tag:
                 self.text_box.tag_remove("uncommon", f'1.{position}', f'1.{position + len(word)}')
             else:
@@ -140,10 +141,13 @@ def ignore_word(self, word):
 # This function gets the word replacement for the word
 def get_word_replacement(self, word):
     text = Word(word)
+    # Get the suggestion for the word and parse it
     suggestion = text.spellcheck()
     suggestion_text = suggestion[0]
     suggestion_text = str(suggestion_text).split(" ", 1)[0]
     suggestion_text = self.regex.sub('', suggestion_text)
+
+    # Check if the suggestion is the same as the word, or if there are no suggestions
     if suggestion_text == "n" or suggestion_text == "":
         return False
     elif suggestion_text != word:
@@ -156,9 +160,12 @@ def get_word_replacement(self, word):
 # This function gets the synonym for the word
 def get_word_synonym(self, word):
     self.synonyms = []
+
+    # Check if the word is in the ignore list, or if it is a common word
     if word in self.leaflet_master.common_words or word in self.leaflet_master.ignore_words \
             or word == "\n" or word.isspace() or len(word) == 1:
         return False
+    # Get the synonym for the word
     else:
         for syn in wordnet.synsets(word):
             for lemma in syn.lemmas():
