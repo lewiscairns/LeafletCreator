@@ -1,3 +1,4 @@
+# Import necessary libraries and modules
 from os.path import expanduser
 
 import docxFiles
@@ -9,12 +10,14 @@ from tkinter.simpledialog import askstring
 from PIL import Image, ImageTk
 
 
+# This function is used to get a folder to save the file from the user
 def title_file(self, master):
     self.user_title = tk.simpledialog.askstring(" ", "Please enter a title for this file.")
     new_title = self.user_title + " - Leaflet Creator"
     master.title(self, new_title)
 
 
+# This function creates a new page, moving to the new page
 def create_page(self, master_page):
     self.page_counter = self.page_counter + 1
     self.pages.append(master_page(self))
@@ -23,23 +26,29 @@ def create_page(self, master_page):
     self.show_page()
 
 
+# This function switches to the next page
 def next_page(self):
     self.pages[self.current_page].grid_forget()
     self.current_page = (self.current_page - 1) % len(self.pages)
     self.show_page()
 
 
+# This function switches to the previous page
 def prev_page(self):
     self.pages[self.current_page].grid_forget()
     self.current_page = (self.current_page + 1) % len(self.pages)
     self.show_page()
 
 
+# This function gets the variables needed to generate the DOCX file
 def generate(self):
+    # Get the folder to generate the file in
     if self.saved_folder == "":
         folder_selected = fd.askdirectory(title="Select Folder To Generate File", initialdir=expanduser('~/Documents'))
     else:
         folder_selected = fd.askdirectory(title="Select Folder To Generate File", initialdir=self.saved_folder)
+
+    # Get the text and images from each page
     all_rows = []
     page_counter = 0
     for page in self.pages:
@@ -48,12 +57,18 @@ def generate(self):
             label, text = row.get_row()
             all_rows[page_counter].append([label, text])
         page_counter = page_counter + 1
+
+    # Start generating the file
     docxFiles.create_document(self.user_title, all_rows, folder_selected, self.font_style, self.font_size, self.watermark_image, self.watermark_text)
+
+    # Tell the user if the process has been successful
     tk.messagebox.showinfo("Success", "Your document has been created, please open it in Word")
 
 
+# This class is used to get the font style from the user
 class ChangeFont:
     def __init__(self, master):
+        # Set the windows elements
         self.master = master
         self.top = tk.Toplevel(master)
         self.top.geometry("150x200")
@@ -69,6 +84,7 @@ class ChangeFont:
         self.helvetica_button.grid(row=3, column=0, padx=10, pady=5)
         self.calibri_button.grid(row=4, column=0, padx=10, pady=5)
 
+    # Each function sets the font to a new font style
     def arial(self):
         self.master.font_style = "Arial"
         self.top.destroy()
@@ -90,8 +106,10 @@ class ChangeFont:
         tk.messagebox.showinfo("Success", "Your document will now generate in Calibri as the font style")
 
 
+# This class is used to get the font size setting from the user
 class ChangeFontSize:
     def __init__(self, master):
+        # Set the windows elements
         self.master = master
         self.top = tk.Toplevel(master)
         self.top.geometry("180x80")
@@ -110,6 +128,7 @@ class ChangeFontSize:
         self.top_button_down.grid(row=1, column=2)
         self.top_button.grid(row=2, column=1)
 
+    # Each function increases or decreases the font size
     def increase_font_size(self):
         if self.master.font_size == 24:
             pass
@@ -125,8 +144,10 @@ class ChangeFontSize:
             self.top_font_size.set(self.master.font_size)
 
 
+# This class is used to get the reading level setting from the user
 class ChangeReading:
     def __init__(self, master):
+        # Set the windows elements
         self.master = master
         self.top = tk.Toplevel(master)
         self.top.geometry("220x80")
@@ -145,6 +166,7 @@ class ChangeReading:
         self.top_button_down.grid(row=1, column=2)
         self.top_button.grid(row=2, column=1)
 
+    # Each function increases or decreases the reading level
     def increase_reading_level(self):
         if self.master.reading_level == 120:
             pass
@@ -160,8 +182,10 @@ class ChangeReading:
             self.top_reading_level.set(self.master.reading_level)
 
 
+# This class is used to get the word count setting from the user
 class ChangeWordCount:
     def __init__(self, master):
+        # Set the windows elements
         self.master = master
         self.top = tk.Toplevel(master)
         self.top.geometry("220x80")
@@ -180,6 +204,7 @@ class ChangeWordCount:
         self.top_button_down.grid(row=1, column=2)
         self.top_button.grid(row=2, column=1)
 
+    # Each function increases or decreases the word count
     def increase_word_count(self):
         if self.master.word_count == 25:
             pass
@@ -195,8 +220,10 @@ class ChangeWordCount:
             self.top_word_count.set(self.master.word_count)
 
 
+# This class is used to get the polarity setting from the user
 class ChangeSentiment:
     def __init__(self, master):
+        # Set the windows elements
         self.master = master
         self.top = tk.Toplevel(master)
         self.top.geometry("300x100")
@@ -217,6 +244,7 @@ class ChangeSentiment:
         self.top_button_down.grid(row=2, column=2)
         self.top_button.grid(row=3, column=1)
 
+    # Each function increases or decreases the polarity limit
     def increase_polarity_limit(self):
         if self.master.polarity == 1:
             pass
@@ -232,8 +260,10 @@ class ChangeSentiment:
             self.top_polarity.set(self.master.polarity)
 
 
+# This class lets the user set the footers text and image
 class Footer:
     def __init__(self, master):
+        # Set the windows elements
         self.master = master
         self.watermark_image = self.master.watermark_image
         self.top = tk.Toplevel(master)
@@ -256,12 +286,14 @@ class Footer:
         self.top_button_save.grid(row=2, column=0, pady=10)
         self.top_button.grid(row=2, column=1, pady=10)
 
+    # This function saves the footer text and image
     def save_watermark(self):
         self.master.watermark_text = self.top_entry.get()
         self.master.watermark_image = self.watermark_image
         self.top.destroy()
 
     # noinspection PyUnusedLocal
+    # This function allows the user to select an the footer image
     def image_click(self, event):
         filetypes = (('image png', '*.png'), ('image jpg', '*.jpg'), ('All files', '*.*'))
         self.watermark_image = fd.askopenfilename(title='Open Images',
@@ -275,6 +307,7 @@ class Footer:
         self.top.lift()
 
 
+# The following 4 classes set the text for the Easy Read advice windows, setting all the text to variables then displaying them as text elements on the window
 class WhatEasyRead:
     def __init__(self, master):
         self.master = master
