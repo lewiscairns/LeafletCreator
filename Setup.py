@@ -48,7 +48,7 @@ setup(
     keywords=[],
 
     # List project dependencies:
-    install_requires=['numpy', 'regex', 'pillow', 'textstat', 'python-docx', 'textblob', 'nltk'],
+    install_requires=['numpy', 'regex', 'pillow', 'textstat', 'python-docx', 'textblob', 'nltk', 'customtkinter'],
 
     # https://pypi.org/classifiers/
     classifiers=[]
