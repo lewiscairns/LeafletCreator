@@ -1,5 +1,4 @@
-from distutils.core import setup
-from setuptools import find_packages
+from setuptools import find_packages, setup
 from setuptools.command.install import install as _install
 import os
 
@@ -17,7 +16,7 @@ class Install(_install):
     def run(self):
         _install.do_egg_install(self)
         import nltk
-        nltk.download('wordnet')
+        nltk.download("wordnet")
 
 
 setup(
