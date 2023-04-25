@@ -112,7 +112,7 @@ def word_right_click(self, event):
             break
 
     try:
-        # Add the replace word and ignore warning commands to the right-click menu
+        # Add the replacement word and ignore warning commands to the right-click menu
         if is_wrong:
             if self.replacement_word != "":
                 word_menu.add_separator()
