@@ -1,5 +1,6 @@
 from distutils.core import setup
 from setuptools import find_packages
+from setuptools.command.install import install as _install
 import os
 
 # Optional project description in README.md:
@@ -11,45 +12,35 @@ try:
 except Exception:
     long_description = ''
 
+
+class Install(_install):
+    def run(self):
+        _install.do_egg_install(self)
+        import nltk
+        nltk.download('wordnet')
+
+
 setup(
 
-    # Project name:
+    # Use custom install class
+    cmdclass={'install': Install},
+
     name='Leaflet Creator',
 
     # Packages to include in the distribution:
     packages=find_packages(),
 
-    # Project version number:
     version='1.0',
 
-    # List a license for the project, eg. MIT License
-    license='',
-
-    # Short description of your library:
     description='Install dependencies for Leaflet Creator',
 
-    # Long description of your library:
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-
-    # Your name:
     author='Lewis Cairns',
 
-    # Your email address:
     author_email='lwcairns@dundee.ac.uk',
 
-    # Link to your github repository or website:
     url='https://github.com/lewiscairns/LeafletCreator/tree/main',
 
-    # Download Link from where the project can be downloaded from:
     download_url='https://github.com/lewiscairns/LeafletCreator/tree/main',
 
-    # List of keywords:
-    keywords=[],
-
-    # List project dependencies:
     install_requires=['numpy', 'regex', 'pillow', 'textstat', 'python-docx', 'textblob', 'nltk'],
-
-    # https://pypi.org/classifiers/
-    classifiers=[]
 )
